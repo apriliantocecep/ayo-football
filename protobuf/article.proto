@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/apriliantocecep/posfin-blog/services/article/pkg/pb";
+
+service ArticleService {
+  rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);
+}
+
+message SubmitArticleRequest {
+  string title = 1;
+  string author = 2;
+  string html_content = 3;
+  string user_id = 4;
+}
+
+message SubmitArticleResponse {
+  string article_id = 1;
+  string status = 2;
+}

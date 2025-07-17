@@ -6,6 +6,7 @@ service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc GetUserById(GetUserByIdRequest) returns (User);
 }
 
 message LoginRequest {
@@ -35,4 +36,16 @@ message ValidateTokenRequest {
 
 message ValidateTokenResponse {
   string user_id = 1;
+}
+
+message GetUserByIdRequest {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  string created_at = 5;
 }

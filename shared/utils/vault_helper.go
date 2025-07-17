@@ -24,6 +24,11 @@ func GetVaultSecretAuthSvc(client *shared.VaultClient) map[string]interface{} {
 	return secret
 }
 
+func GetVaultSecretArticleSvc(client *shared.VaultClient) map[string]interface{} {
+	secret := GetVaultSecret(client, "article-service")
+	return secret
+}
+
 func ParsePort(portStr string) int {
 	value, err := strconv.Atoi(portStr)
 	if err != nil {

@@ -48,8 +48,26 @@ func (a *AuthServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.
 }
 
 func (a *AuthServer) ValidateToken(ctx context.Context, in *pb.ValidateTokenRequest) (*pb.ValidateTokenResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	userId, err := a.UserUseCase.ValidateToken(ctx, in.GetToken())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ValidateTokenResponse{UserId: userId}, nil
+}
+
+func (a *AuthServer) GetUserById(ctx context.Context, in *pb.GetUserByIdRequest) (*pb.User, error) {
+	res, err := a.UserUseCase.GetUserById(ctx, in.GetId())
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.User{
+		Id:        res.ID,
+		Name:      res.Name,
+		Email:     res.Email,
+		Username:  res.Username,
+		CreatedAt: res.CreatedAt.String(),
+	}, nil
 }
 
 func NewAuthServer(userUseCase *usecase.UserUseCase) *AuthServer {

@@ -86,6 +86,32 @@ func (u *UserUseCase) Login(ctx context.Context, request *model.LoginRequest) (*
 	return response, nil
 }
 
+func (u *UserUseCase) GetUserById(ctx context.Context, id string) (*model.UserResource, error) {
+	userEntity, err := u.UserRepository.FindById(u.DB, id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := model.UserResource{
+		ID:        userEntity.ID.String(),
+		Name:      userEntity.Name,
+		Email:     userEntity.Email,
+		Username:  userEntity.Username,
+		CreatedAt: userEntity.CreatedAt,
+	}
+
+	return &response, nil
+}
+
+func (u *UserUseCase) ValidateToken(ctx context.Context, token string) (string, error) {
+	claims, err := u.Jwt.ValidateToken(token)
+	if err != nil {
+		return "", status.Errorf(codes.Aborted, "can not validated access token")
+	}
+
+	return claims.RegisteredClaims.Subject, nil
+}
+
 func NewUserUseCase(userRepository *repository.UserRepository, jwt *config.JwtWrapper, db *gorm.DB) *UserUseCase {
 	return &UserUseCase{UserRepository: userRepository, Jwt: jwt, DB: db}
 }

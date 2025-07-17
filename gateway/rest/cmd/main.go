@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/grpc_client"
 	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/http"
+	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/http/middlewares"
 	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/http/routes"
 	"github.com/apriliantocecep/posfin-blog/shared"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
@@ -39,15 +40,29 @@ func main() {
 		}
 	}(authServiceClient.Conn)
 
+	articleServiceClient := grpc_client.NewArticleServiceClient(vaultClient)
+	defer func(Conn *grpc.ClientConn) {
+		err := Conn.Close()
+		if err != nil {
+			log.Fatalf("closing connection to article service error: %v", err)
+		}
+	}(articleServiceClient.Conn)
+
 	// validator instance
 	newValidator := validator.New()
 
 	// http handlers
 	authHandler := http.NewAuthHandler(authServiceClient, newValidator)
+	articleHandler := http.NewArticleHandler(newValidator, articleServiceClient, authServiceClient)
+
+	// middlewares
+	authMiddleware := middlewares.NewAuthMiddleware(authServiceClient)
 
 	// routes
 	authRoutes := routes.NewAuthRoutes(app, authHandler)
+	articleRoutes := routes.NewArticleRoutes(app, articleHandler, authMiddleware)
 	authRoutes.Setup()
+	articleRoutes.Setup()
 
 	// listener
 	secret := utils.GetVaultSecretConfig(vaultClient)

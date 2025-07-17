@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/config"
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/delivery/grpc_server"
@@ -21,9 +22,15 @@ func main() {
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
+	defer func(Conn *sql.DB) {
+		err := Conn.Close()
+		if err != nil {
+			log.Fatalf("error closing db: %v", err)
+		}
+	}(database.Conn)
 	jwt := config.NewJwt(vaultClient)
 	userRepository := repository.NewUserRepository()
-	userUseCase := usecase.NewUserUseCase(userRepository, jwt, database)
+	userUseCase := usecase.NewUserUseCase(userRepository, jwt, database.DB)
 
 	// grpc server
 	srv := grpc_server.NewAuthServer(userUseCase)

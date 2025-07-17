@@ -1,6 +1,7 @@
 package config
 
 import (
+	"database/sql"
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/entity"
 	"github.com/apriliantocecep/posfin-blog/shared"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
@@ -10,13 +11,21 @@ import (
 	"time"
 )
 
-func NewDatabase(vaultClient *shared.VaultClient) *gorm.DB {
+type Database struct {
+	DB   *gorm.DB
+	Conn *sql.DB
+}
+
+func NewDatabase(vaultClient *shared.VaultClient) *Database {
 	var gormDB *gorm.DB
 
 	secret := utils.GetVaultSecretAuthSvc(vaultClient)
 
-	dsn := secret["DATABASE_URL"].(string)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dsn := secret["DATABASE_URL"]
+	if dsn == nil || dsn == "" {
+		log.Fatalln("DATABASE_URL is not set")
+	}
+	db, err := gorm.Open(postgres.Open(dsn.(string)), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
 	}
@@ -40,5 +49,8 @@ func NewDatabase(vaultClient *shared.VaultClient) *gorm.DB {
 
 	gormDB = db
 
-	return gormDB
+	return &Database{
+		DB:   gormDB,
+		Conn: conn,
+	}
 }
