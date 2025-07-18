@@ -16,6 +16,8 @@ func (a *ArticleServer) SubmitArticle(ctx context.Context, in *pb.SubmitArticleR
 	req := model.ArticleRequest{
 		Content: in.HtmlContent,
 		UserId:  in.UserId,
+		Title:   in.Title,
+		Author:  in.Author,
 	}
 	res, err := a.ArticleUseCase.Insert(ctx, &req)
 	if err != nil {

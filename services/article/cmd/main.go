@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/config"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/delivery/grpc_server"
+	"github.com/apriliantocecep/posfin-blog/services/article/internal/gateway/messaging"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/repository"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/usecase"
 	"github.com/apriliantocecep/posfin-blog/services/article/pkg/pb"
 	"github.com/apriliantocecep/posfin-blog/shared"
+	sharedlib "github.com/apriliantocecep/posfin-blog/shared/lib"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -19,6 +22,18 @@ func main() {
 	// vault client
 	vaultClient := shared.NewVaultClient()
 	secret := utils.GetVaultSecretConfig(vaultClient)
+
+	// rabbitmq client
+	rabbitMQClient := sharedlib.NewRabbitMQClient(vaultClient)
+	defer func(Conn *amqp.Connection) {
+		err := Conn.Close()
+		if err != nil {
+			log.Fatalf("error closing rabbitmq: %v", err)
+		}
+	}(rabbitMQClient.Conn)
+
+	// setup publisher
+	articleCreatedPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "article_created")
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
@@ -31,7 +46,7 @@ func main() {
 	articleDb := database.Client.Database("posfin")
 	articleCollection := articleDb.Collection("articles")
 	articleRepository := repository.NewArticleRepository(articleCollection)
-	articleUseCase := usecase.NewArticleUseCase(database.Client, articleRepository)
+	articleUseCase := usecase.NewArticleUseCase(database.Client, articleRepository, articleCreatedPublisher)
 
 	// grpc server
 	srv := grpc_server.NewArticleServer(articleUseCase)
