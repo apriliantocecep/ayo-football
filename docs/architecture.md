@@ -21,7 +21,7 @@
    - **MongoDB** untuk menyimpan konten artikel (WYSIWYG HTML)
    - **RabbitMQ** sebagai message broker untuk pipeline moderasi asinkron
    - **Docker Compose** untuk menjalankan semua layanan dan dependensi
-   - **Vault** untuk menjalankan secrent management
+   - **Vault** untuk menjalankan secret management
 
    ## Deployment
 
