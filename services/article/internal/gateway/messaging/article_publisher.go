@@ -9,11 +9,12 @@ type ArticlePublisher struct {
 	Publisher[*model.ArticleEvent]
 }
 
-func NewArticlePublisher(channel *amqp.Channel, queueName string) *ArticlePublisher {
+func NewArticlePublisher(channel *amqp.Channel, queueName string, routingKey string) *ArticlePublisher {
 	return &ArticlePublisher{
 		Publisher: Publisher[*model.ArticleEvent]{
-			Channel:   channel,
-			QueueName: queueName,
+			Channel:    channel,
+			QueueName:  queueName,
+			RoutingKey: routingKey,
 		},
 	}
 }

@@ -33,7 +33,7 @@ func main() {
 	}(rabbitMQClient.Conn)
 
 	// setup publisher
-	articleCreatedPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "article_created")
+	articleCreatedPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "moderation", "article.created")
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
