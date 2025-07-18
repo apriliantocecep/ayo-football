@@ -18,6 +18,7 @@ func (r *ArticleRoutes) Setup() {
 	auth := routes.Group("articles")
 	auth.Post("/", r.ArticleHandler.Create)
 	auth.Patch("/:articleId/publish", r.ArticleHandler.Publish)
+	auth.Get("/", r.ArticleHandler.ShowAll)
 }
 
 func NewArticleRoutes(app *fiber.App, articleHandler *http.ArticleHandler, authMiddleware *middlewares.AuthMiddleware) *ArticleRoutes {

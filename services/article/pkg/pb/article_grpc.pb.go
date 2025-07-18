@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ArticleService_SubmitArticle_FullMethodName  = "/ArticleService/SubmitArticle"
 	ArticleService_PublishArticle_FullMethodName = "/ArticleService/PublishArticle"
+	ArticleService_GetArticles_FullMethodName    = "/ArticleService/GetArticles"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -29,6 +30,7 @@ const (
 type ArticleServiceClient interface {
 	SubmitArticle(ctx context.Context, in *SubmitArticleRequest, opts ...grpc.CallOption) (*SubmitArticleResponse, error)
 	PublishArticle(ctx context.Context, in *PublishArticleRequest, opts ...grpc.CallOption) (*PublishArticleResponse, error)
+	GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*GetArticlesResponse, error)
 }
 
 type articleServiceClient struct {
@@ -59,12 +61,23 @@ func (c *articleServiceClient) PublishArticle(ctx context.Context, in *PublishAr
 	return out, nil
 }
 
+func (c *articleServiceClient) GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*GetArticlesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetArticlesResponse)
+	err := c.cc.Invoke(ctx, ArticleService_GetArticles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility.
 type ArticleServiceServer interface {
 	SubmitArticle(context.Context, *SubmitArticleRequest) (*SubmitArticleResponse, error)
 	PublishArticle(context.Context, *PublishArticleRequest) (*PublishArticleResponse, error)
+	GetArticles(context.Context, *GetArticlesRequest) (*GetArticlesResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedArticleServiceServer) SubmitArticle(context.Context, *SubmitA
 }
 func (UnimplementedArticleServiceServer) PublishArticle(context.Context, *PublishArticleRequest) (*PublishArticleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PublishArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) GetArticles(context.Context, *GetArticlesRequest) (*GetArticlesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 func (UnimplementedArticleServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +154,24 @@ func _ArticleService_PublishArticle_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_GetArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticlesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_GetArticles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetArticles(ctx, req.(*GetArticlesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PublishArticle",
 			Handler:    _ArticleService_PublishArticle_Handler,
+		},
+		{
+			MethodName: "GetArticles",
+			Handler:    _ArticleService_GetArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

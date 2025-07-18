@@ -43,6 +43,25 @@ func (a *ArticleServer) PublishArticle(ctx context.Context, in *pb.PublishArticl
 	return &pb.PublishArticleResponse{Status: "sent for content moderation"}, nil
 }
 
+func (a *ArticleServer) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.GetArticlesResponse, error) {
+	articles, err := a.ArticleUseCase.GetArticles(ctx, in.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+
+	var newArticles []*pb.Article
+	for _, article := range articles {
+		newArticles = append(newArticles, &pb.Article{
+			Id:      article.ID.Hex(),
+			Status:  article.Status,
+			Content: article.Content,
+			UserId:  article.UserId,
+		})
+	}
+
+	return &pb.GetArticlesResponse{Articles: newArticles}, nil
+}
+
 func NewArticleServer(articleUseCase *usecase.ArticleUseCase) *ArticleServer {
 	return &ArticleServer{ArticleUseCase: articleUseCase}
 }

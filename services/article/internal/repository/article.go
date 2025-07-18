@@ -15,6 +15,41 @@ type ArticleRepository struct {
 	Collection *mongo.Collection
 }
 
+func (a *ArticleRepository) GetArticles(userId string) ([]*entity.Article, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"user_id": userId,
+	}
+
+	cur, err := a.Collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	var articles []*entity.Article
+
+	for cur.Next(ctx) {
+		var articleEntity entity.Article
+		if err := cur.Decode(&articleEntity); err != nil {
+			continue
+		}
+
+		article := &entity.Article{
+			ID:      articleEntity.ID,
+			Content: articleEntity.Content,
+			UserId:  articleEntity.UserId,
+			Status:  articleEntity.Status,
+		}
+
+		articles = append(articles, article)
+	}
+
+	return articles, nil
+}
+
 func (a *ArticleRepository) GetByOwnedId(id string, userId string) (*entity.Article, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

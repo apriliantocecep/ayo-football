@@ -20,6 +20,14 @@ type ArticleUseCase struct {
 	ArticleModerationPublisher *messaging.ArticlePublisher
 }
 
+func (u *ArticleUseCase) GetArticles(ctx context.Context, userId string) ([]*entity.Article, error) {
+	articles, err := u.ArticleRepository.GetArticles(userId)
+	if err != nil {
+		return nil, err
+	}
+	return articles, err
+}
+
 func (u *ArticleUseCase) SendForModeration(ctx context.Context, request *model.ModerationRequest) error {
 	article, err := u.ArticleRepository.GetByOwnedId(request.ArticleId, request.UserId)
 	if err != nil {

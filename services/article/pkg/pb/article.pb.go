@@ -237,6 +237,162 @@ func (x *PublishArticleResponse) GetStatus() string {
 	return ""
 }
 
+type GetArticlesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetArticlesRequest) Reset() {
+	*x = GetArticlesRequest{}
+	mi := &file_article_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetArticlesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArticlesRequest) ProtoMessage() {}
+
+func (x *GetArticlesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_article_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArticlesRequest.ProtoReflect.Descriptor instead.
+func (*GetArticlesRequest) Descriptor() ([]byte, []int) {
+	return file_article_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetArticlesRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetArticlesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Articles      []*Article             `protobuf:"bytes,1,rep,name=articles,proto3" json:"articles,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetArticlesResponse) Reset() {
+	*x = GetArticlesResponse{}
+	mi := &file_article_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetArticlesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArticlesResponse) ProtoMessage() {}
+
+func (x *GetArticlesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_article_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArticlesResponse.ProtoReflect.Descriptor instead.
+func (*GetArticlesResponse) Descriptor() ([]byte, []int) {
+	return file_article_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetArticlesResponse) GetArticles() []*Article {
+	if x != nil {
+		return x.Articles
+	}
+	return nil
+}
+
+type Article struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Article) Reset() {
+	*x = Article{}
+	mi := &file_article_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Article) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Article) ProtoMessage() {}
+
+func (x *Article) ProtoReflect() protoreflect.Message {
+	mi := &file_article_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Article.ProtoReflect.Descriptor instead.
+func (*Article) Descriptor() ([]byte, []int) {
+	return file_article_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Article) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Article) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Article) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *Article) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 var File_article_proto protoreflect.FileDescriptor
 
 const file_article_proto_rawDesc = "" +
@@ -256,10 +412,20 @@ const file_article_proto_rawDesc = "" +
 	"article_id\x18\x01 \x01(\tR\tarticleId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\"0\n" +
 	"\x16PublishArticleResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status2\x93\x01\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"-\n" +
+	"\x12GetArticlesRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\";\n" +
+	"\x13GetArticlesResponse\x12$\n" +
+	"\barticles\x18\x01 \x03(\v2\b.ArticleR\barticles\"d\n" +
+	"\aArticle\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\tR\x06userId2\xcd\x01\n" +
 	"\x0eArticleService\x12>\n" +
 	"\rSubmitArticle\x12\x15.SubmitArticleRequest\x1a\x16.SubmitArticleResponse\x12A\n" +
-	"\x0ePublishArticle\x12\x16.PublishArticleRequest\x1a\x17.PublishArticleResponseB@Z>github.com/apriliantocecep/posfin-blog/services/article/pkg/pbb\x06proto3"
+	"\x0ePublishArticle\x12\x16.PublishArticleRequest\x1a\x17.PublishArticleResponse\x128\n" +
+	"\vGetArticles\x12\x13.GetArticlesRequest\x1a\x14.GetArticlesResponseB@Z>github.com/apriliantocecep/posfin-blog/services/article/pkg/pbb\x06proto3"
 
 var (
 	file_article_proto_rawDescOnce sync.Once
@@ -273,23 +439,29 @@ func file_article_proto_rawDescGZIP() []byte {
 	return file_article_proto_rawDescData
 }
 
-var file_article_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_article_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_article_proto_goTypes = []any{
 	(*SubmitArticleRequest)(nil),   // 0: SubmitArticleRequest
 	(*SubmitArticleResponse)(nil),  // 1: SubmitArticleResponse
 	(*PublishArticleRequest)(nil),  // 2: PublishArticleRequest
 	(*PublishArticleResponse)(nil), // 3: PublishArticleResponse
+	(*GetArticlesRequest)(nil),     // 4: GetArticlesRequest
+	(*GetArticlesResponse)(nil),    // 5: GetArticlesResponse
+	(*Article)(nil),                // 6: Article
 }
 var file_article_proto_depIdxs = []int32{
-	0, // 0: ArticleService.SubmitArticle:input_type -> SubmitArticleRequest
-	2, // 1: ArticleService.PublishArticle:input_type -> PublishArticleRequest
-	1, // 2: ArticleService.SubmitArticle:output_type -> SubmitArticleResponse
-	3, // 3: ArticleService.PublishArticle:output_type -> PublishArticleResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	6, // 0: GetArticlesResponse.articles:type_name -> Article
+	0, // 1: ArticleService.SubmitArticle:input_type -> SubmitArticleRequest
+	2, // 2: ArticleService.PublishArticle:input_type -> PublishArticleRequest
+	4, // 3: ArticleService.GetArticles:input_type -> GetArticlesRequest
+	1, // 4: ArticleService.SubmitArticle:output_type -> SubmitArticleResponse
+	3, // 5: ArticleService.PublishArticle:output_type -> PublishArticleResponse
+	5, // 6: ArticleService.GetArticles:output_type -> GetArticlesResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_article_proto_init() }
@@ -303,7 +475,7 @@ func file_article_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_article_proto_rawDesc), len(file_article_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

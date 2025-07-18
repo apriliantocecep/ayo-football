@@ -16,6 +16,20 @@ type ArticleHandler struct {
 	AuthServiceClient    *grpc_client.AuthServiceClient
 }
 
+func (h *ArticleHandler) ShowAll(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+
+	req := pb.GetArticlesRequest{UserId: userID}
+	res, err := h.ArticleServiceClient.Client.GetArticles(c.UserContext(), &req)
+	if err != nil {
+		return utils.HandleGrpcError(err)
+	}
+
+	return c.JSON(fiber.Map{
+		"data": res.GetArticles(),
+	})
+}
+
 func (h *ArticleHandler) Publish(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 
