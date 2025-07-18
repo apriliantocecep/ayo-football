@@ -4,6 +4,7 @@ option go_package = "github.com/apriliantocecep/posfin-blog/services/article/pkg
 
 service ArticleService {
   rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);
+  rpc PublishArticle(PublishArticleRequest) returns (PublishArticleResponse);
 }
 
 message SubmitArticleRequest {
@@ -16,4 +17,13 @@ message SubmitArticleRequest {
 message SubmitArticleResponse {
   string article_id = 1;
   string status = 2;
+}
+
+message PublishArticleRequest {
+  string article_id = 1;
+  string user_id = 2;
+}
+
+message PublishArticleResponse {
+  string status = 1;
 }

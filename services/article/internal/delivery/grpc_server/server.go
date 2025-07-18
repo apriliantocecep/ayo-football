@@ -30,6 +30,19 @@ func (a *ArticleServer) SubmitArticle(ctx context.Context, in *pb.SubmitArticleR
 	}, nil
 }
 
+func (a *ArticleServer) PublishArticle(ctx context.Context, in *pb.PublishArticleRequest) (*pb.PublishArticleResponse, error) {
+	req := model.ModerationRequest{
+		ArticleId: in.GetArticleId(),
+		UserId:    in.GetUserId(),
+	}
+	err := a.ArticleUseCase.SendForModeration(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.PublishArticleResponse{Status: "sent for content moderation"}, nil
+}
+
 func NewArticleServer(articleUseCase *usecase.ArticleUseCase) *ArticleServer {
 	return &ArticleServer{ArticleUseCase: articleUseCase}
 }

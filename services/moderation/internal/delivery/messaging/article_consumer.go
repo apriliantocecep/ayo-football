@@ -11,10 +11,38 @@ import (
 )
 
 type ArticleConsumer struct {
-	MetadataUseCase *usecase.MetadataUseCase
+	MetadataUseCase   *usecase.MetadataUseCase
+	ModerationUseCase *usecase.ModerationUseCase
 }
 
-func (c *ArticleConsumer) Consume(delivery amqp.Delivery) error {
+func (c *ArticleConsumer) ConsumeArticleModeration(delivery amqp.Delivery) error {
+	articleEvent := new(sharedmodel.ArticleEvent)
+	err := json.Unmarshal(delivery.Body, articleEvent)
+	if err != nil {
+		return err
+	}
+	//log.Printf("Content: %s", articleEvent.Content)
+
+	req := model.CheckContentRequest{Content: articleEvent.Content}
+	res, err := c.ModerationUseCase.CheckContent(context.Background(), &req)
+	if err != nil {
+		return err
+	}
+
+	processReq := model.ProcessRequest{
+		ArticleId: articleEvent.GetId(),
+		IsPass:    res.IsPass,
+	}
+	processRes, err := c.ModerationUseCase.Process(context.Background(), &processReq)
+	if err != nil {
+		return err
+	}
+	log.Printf("article id '%s' schedule to set '%s'", articleEvent.ID, processRes.ModerationStatus)
+
+	return nil
+}
+
+func (c *ArticleConsumer) ConsumeArticleCreated(delivery amqp.Delivery) error {
 	articleEvent := new(sharedmodel.ArticleEvent)
 	err := json.Unmarshal(delivery.Body, articleEvent)
 	if err != nil {
@@ -38,6 +66,9 @@ func (c *ArticleConsumer) Consume(delivery amqp.Delivery) error {
 	return nil
 }
 
-func NewArticleConsumer(metadataUseCase *usecase.MetadataUseCase) *ArticleConsumer {
-	return &ArticleConsumer{MetadataUseCase: metadataUseCase}
+func NewArticleConsumer(metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) *ArticleConsumer {
+	return &ArticleConsumer{
+		MetadataUseCase:   metadataUseCase,
+		ModerationUseCase: moderationUseCase,
+	}
 }

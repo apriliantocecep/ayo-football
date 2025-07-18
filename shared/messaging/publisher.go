@@ -10,9 +10,10 @@ import (
 )
 
 type Publisher[T sharedmodel.Event] struct {
-	Channel    *amqp.Channel
-	QueueName  string
-	RoutingKey string
+	Channel      *amqp.Channel
+	QueueName    string
+	RoutingKey   string
+	ExchangeName string
 }
 
 func (p *Publisher[T]) GetQueueName() string {
@@ -21,6 +22,10 @@ func (p *Publisher[T]) GetQueueName() string {
 
 func (p *Publisher[T]) GetRoutingKey() string {
 	return p.RoutingKey
+}
+
+func (p *Publisher[T]) GetExchangeName() string {
+	return p.ExchangeName
 }
 
 func (p *Publisher[T]) Publish(event T) error {
@@ -48,10 +53,10 @@ func (p *Publisher[T]) Publish(event T) error {
 	defer cancel()
 
 	err = p.Channel.PublishWithContext(ctx,
-		"article",         // exchange
-		p.GetRoutingKey(), // routing key
-		false,             // mandatory
-		false,             // immediate
+		p.GetExchangeName(), // exchange
+		p.GetRoutingKey(),   // routing key
+		false,               // mandatory
+		false,               // immediate
 		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        value,

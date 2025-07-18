@@ -6,13 +6,13 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type ArticlePublisher struct {
-	sharedmessaging.Publisher[*sharedmodel.ArticleEvent]
+type MetadataPublisher struct {
+	sharedmessaging.Publisher[*sharedmodel.MetadataEvent]
 }
 
-func NewArticlePublisher(channel *amqp.Channel, queueName string, routingKey string) *ArticlePublisher {
-	return &ArticlePublisher{
-		Publisher: sharedmessaging.Publisher[*sharedmodel.ArticleEvent]{
+func NewMetadataPublisher(channel *amqp.Channel, queueName string, routingKey string) *MetadataPublisher {
+	return &MetadataPublisher{
+		Publisher: sharedmessaging.Publisher[*sharedmodel.MetadataEvent]{
 			Channel:      channel,
 			QueueName:    queueName,
 			RoutingKey:   routingKey,

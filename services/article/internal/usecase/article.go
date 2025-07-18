@@ -14,9 +14,30 @@ import (
 )
 
 type ArticleUseCase struct {
-	DB                      *mongo.Client
-	ArticleRepository       *repository.ArticleRepository
-	ArticleCreatedPublisher *messaging.ArticlePublisher
+	DB                         *mongo.Client
+	ArticleRepository          *repository.ArticleRepository
+	ArticleCreatedPublisher    *messaging.ArticlePublisher
+	ArticleModerationPublisher *messaging.ArticlePublisher
+}
+
+func (u *ArticleUseCase) SendForModeration(ctx context.Context, request *model.ModerationRequest) error {
+	article, err := u.ArticleRepository.GetByOwnedId(request.ArticleId, request.UserId)
+	if err != nil {
+		return err
+	}
+
+	// publish to broker
+	event := sharedmodel.ArticleEvent{
+		ID:      request.ArticleId,
+		Content: article.Content,
+	}
+	err = u.ArticleModerationPublisher.Publish(&event)
+	if err != nil {
+		log.Printf("failed publish article moderation event : %+v", err)
+		return status.Errorf(codes.Aborted, "failed to publish article moderation")
+	}
+
+	return nil
 }
 
 func (u *ArticleUseCase) Insert(ctx context.Context, request *model.ArticleRequest) (*model.ArticleResponse, error) {
@@ -49,10 +70,11 @@ func (u *ArticleUseCase) Insert(ctx context.Context, request *model.ArticleReque
 	return &response, nil
 }
 
-func NewArticleUseCase(DB *mongo.Client, articleRepository *repository.ArticleRepository, articleCreatedPublisher *messaging.ArticlePublisher) *ArticleUseCase {
+func NewArticleUseCase(DB *mongo.Client, articleRepository *repository.ArticleRepository, articleCreatedPublisher *messaging.ArticlePublisher, articleModerationPublisher *messaging.ArticlePublisher) *ArticleUseCase {
 	return &ArticleUseCase{
-		DB:                      DB,
-		ArticleRepository:       articleRepository,
-		ArticleCreatedPublisher: articleCreatedPublisher,
+		DB:                         DB,
+		ArticleRepository:          articleRepository,
+		ArticleCreatedPublisher:    articleCreatedPublisher,
+		ArticleModerationPublisher: articleModerationPublisher,
 	}
 }

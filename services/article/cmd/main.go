@@ -33,7 +33,8 @@ func main() {
 	}(rabbitMQClient.Conn)
 
 	// setup publisher
-	articleCreatedPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "moderation", "article.created")
+	articleCreatedPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "article_created", "article_created")
+	articleModerationPublisher := messaging.NewArticlePublisher(rabbitMQClient.Channel, "article_moderation", "article_moderation")
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
@@ -46,7 +47,7 @@ func main() {
 	articleDb := database.Client.Database("posfin")
 	articleCollection := articleDb.Collection("articles")
 	articleRepository := repository.NewArticleRepository(articleCollection)
-	articleUseCase := usecase.NewArticleUseCase(database.Client, articleRepository, articleCreatedPublisher)
+	articleUseCase := usecase.NewArticleUseCase(database.Client, articleRepository, articleCreatedPublisher, articleModerationPublisher)
 
 	// grpc server
 	srv := grpc_server.NewArticleServer(articleUseCase)

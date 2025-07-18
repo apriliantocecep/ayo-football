@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/config"
 	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/delivery/messaging"
+	gatewaymessaging "github.com/apriliantocecep/posfin-blog/services/moderation/internal/gateway/messaging"
 	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/repository"
 	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/usecase"
 	"github.com/apriliantocecep/posfin-blog/shared"
@@ -31,6 +32,9 @@ func main() {
 		}
 	}(rabbitMQClient.Conn)
 
+	// setup publisher
+	metadataPublisher := gatewaymessaging.NewMetadataPublisher(rabbitMQClient.Channel, "moderation_checker", "moderation_checker")
+
 	// dependencies
 	database := config.NewDatabase(vaultClient)
 	defer func(Conn *sql.DB) {
@@ -41,15 +45,20 @@ func main() {
 	}(database.Conn)
 	metadataRepository := repository.NewMetadataRepository()
 	metadataUseCase := usecase.NewMetadataUseCase(database.DB, metadataRepository)
+	moderationUseCase := usecase.NewModerationUseCase(database.DB, metadataRepository, metadataPublisher)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	var wg sync.WaitGroup
 
 	// run consumer
-	wg.Add(1) // wg.Add(total_consumer)
+	wg.Add(2) // wg.Add(total_consumer)
 	go func() {
 		defer wg.Done()
-		runArticleConsumer(ctx, rabbitMQClient.Channel, metadataUseCase)
+		runArticleCreatedConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
+	}()
+	go func() {
+		defer wg.Done()
+		runArticleModerationConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
 	}()
 
 	// signal shutdown
@@ -75,7 +84,12 @@ func main() {
 	//time.Sleep(5 * time.Second) // wait for all consumers to finish processing
 }
 
-func runArticleConsumer(ctx context.Context, channel *amqp.Channel, metadataUseCase *usecase.MetadataUseCase) {
-	consumer := messaging.NewArticleConsumer(metadataUseCase)
-	sharedmessaging.ConsumeQueue(ctx, channel, "moderation", consumer.Consume)
+func runArticleCreatedConsumer(ctx context.Context, channel *amqp.Channel, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
+	consumer := messaging.NewArticleConsumer(metadataUseCase, moderationUseCase)
+	sharedmessaging.ConsumeQueue(ctx, channel, "article_created", consumer.ConsumeArticleCreated)
+}
+
+func runArticleModerationConsumer(ctx context.Context, channel *amqp.Channel, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
+	consumer := messaging.NewArticleConsumer(metadataUseCase, moderationUseCase)
+	sharedmessaging.ConsumeQueue(ctx, channel, "article_moderation", consumer.ConsumeArticleModeration)
 }
