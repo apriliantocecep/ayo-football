@@ -3,13 +3,13 @@ package messaging
 import (
 	"context"
 	"encoding/json"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/model"
+	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"time"
 )
 
-type Publisher[T model.Event] struct {
+type Publisher[T sharedmodel.Event] struct {
 	Channel    *amqp.Channel
 	QueueName  string
 	RoutingKey string

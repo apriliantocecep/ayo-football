@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/apriliantocecep/posfin-blog/services/moderation/pkg/pb";
+
+service ModerationService {
+  rpc PublishArticle(PublishArticleRequest) returns (PublishArticleResponse);
+}
+
+message PublishArticleRequest {
+  string article_id = 1;
+}
+
+message PublishArticleResponse {
+  string article_id = 1;
+  string status = 2;
+}

@@ -6,6 +6,7 @@ import (
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/gateway/messaging"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/model"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/repository"
+	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -32,7 +33,7 @@ func (u *ArticleUseCase) Insert(ctx context.Context, request *model.ArticleReque
 	}
 
 	// publish to broker
-	event := model.ArticleEvent{
+	event := sharedmodel.ArticleEvent{
 		ID:     articleID,
 		Title:  request.Title,
 		Author: request.Author,

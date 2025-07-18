@@ -1,17 +1,17 @@
 package messaging
 
 import (
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/model"
+	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type ArticlePublisher struct {
-	Publisher[*model.ArticleEvent]
+	Publisher[*sharedmodel.ArticleEvent]
 }
 
 func NewArticlePublisher(channel *amqp.Channel, queueName string, routingKey string) *ArticlePublisher {
 	return &ArticlePublisher{
-		Publisher: Publisher[*model.ArticleEvent]{
+		Publisher: Publisher[*sharedmodel.ArticleEvent]{
 			Channel:    channel,
 			QueueName:  queueName,
 			RoutingKey: routingKey,

@@ -15,3 +15,6 @@ run:
 
 rest:
 	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env | xargs) && go run gateway/rest/cmd/main.go'
+
+run_worker:
+	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env | xargs) && go run services/$(SERVICE)/cmd/worker/main.go'

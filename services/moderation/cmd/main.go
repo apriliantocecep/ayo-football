@@ -3,11 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/config"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/delivery/grpc_server"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/repository"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/usecase"
-	"github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb"
+	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/config"
+	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/delivery/grpc_server"
+	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/repository"
+	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/usecase"
+	"github.com/apriliantocecep/posfin-blog/services/moderation/pkg/pb"
 	"github.com/apriliantocecep/posfin-blog/shared"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
 	"google.golang.org/grpc"
@@ -28,19 +28,18 @@ func main() {
 			log.Fatalf("error closing db: %v", err)
 		}
 	}(database.Conn)
-	jwt := config.NewJwt(vaultClient)
-	userRepository := repository.NewUserRepository()
-	userUseCase := usecase.NewUserUseCase(userRepository, jwt, database.DB)
+	metadataRepository := repository.NewMetadataRepository()
+	metadataUseCase := usecase.NewMetadataUseCase(database.DB, metadataRepository)
 
 	// grpc server
-	srv := grpc_server.NewAuthServer(userUseCase)
+	srv := grpc_server.NewModerationServer(metadataUseCase)
 	s := grpc.NewServer()
-	pb.RegisterAuthServiceServer(s, srv)
+	pb.RegisterModerationServiceServer(s, srv)
 
 	// listener
-	portStr := secret["AUTH_SERVICE_PORT"]
+	portStr := secret["MODERATION_SERVICE_PORT"]
 	if portStr == nil || portStr == "" {
-		log.Fatalln("AUTH_SERVICE_PORT is not set")
+		log.Fatalln("MODERATION_SERVICE_PORT is not set")
 	}
 	port := utils.ParsePort(portStr.(string))
 
