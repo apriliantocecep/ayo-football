@@ -54,10 +54,12 @@ func main() {
 	wg.Add(2) // wg.Add(total_consumer)
 	go func() {
 		defer wg.Done()
+		log.Println("[worker] ArticleCreatedConsumer started")
 		runArticleCreatedConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
 	}()
 	go func() {
 		defer wg.Done()
+		log.Println("[worker] ArticleModerationConsumer started")
 		runArticleModerationConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
 	}()
 

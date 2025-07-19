@@ -1,0 +1,167 @@
+services:
+  vault:
+    hostname: vault
+    container_name: vault-dev
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://0.0.0.0:8200"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -dev -dev-listen-address="0.0.0.0:8200" -dev-root-token-id="root"
+
+  vault-init:
+    image: hashicorp/vault:latest
+    container_name: vault-init
+    depends_on:
+      - vault
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: root
+    volumes:
+      - ./init-vault.sh:/init-vault.sh:ro
+    entrypoint: ""
+    command: sh /init-vault.sh
+    restart: "no"
+
+  rabbitmq-server:
+    image: rabbitmq:4-management
+    container_name: rabbitmq-server
+    ports:
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # UI
+    environment:
+#      RABBITMQ_DEFAULT_USER: admin
+#      RABBITMQ_DEFAULT_PASS: secret123
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbitmq_management load_definitions "/etc/rabbitmq/definitions.json"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - ./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
+    restart: unless-stopped
+
+  pgsql-server:
+    image: postgres:15
+    container_name: postgres-server
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: posfin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  mongodb-server:
+    image: mongo:6.0
+    container_name: mongodb-server
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  auth-srv:
+    build:
+      context: .
+      dockerfile: auth-service.dockerfile
+    container_name: auth-srv
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - pgsql-server
+      - rabbitmq-server
+    restart: unless-stopped
+
+  article-srv:
+    build:
+      context: .
+      dockerfile: article-service.dockerfile
+    container_name: article-srv
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - mongodb-server
+      - rabbitmq-server
+    restart: unless-stopped
+
+  article-worker:
+    build:
+      context: .
+      dockerfile: article-worker.dockerfile
+    container_name: article-worker
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - article-srv
+      - mongodb-server
+      - rabbitmq-server
+    restart: unless-stopped
+
+  moderation-srv:
+    build:
+      context: .
+      dockerfile: moderation-service.dockerfile
+    container_name: moderation-srv
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - pgsql-server
+      - rabbitmq-server
+    restart: unless-stopped
+
+  moderation-worker:
+    build:
+      context: .
+      dockerfile: moderation-worker.dockerfile
+    container_name: moderation-worker
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - moderation-srv
+      - pgsql-server
+      - rabbitmq-server
+    restart: unless-stopped
+
+  gateway-srv:
+    build:
+      context: .
+      dockerfile: gateway-service.dockerfile
+    container_name: gateway-srv
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-srv
+      - article-srv
+      - article-worker
+      - moderation-srv
+      - moderation-worker
+    restart: unless-stopped
+
+volumes:
+  rabbitmq-data:
+  postgres-data:
+  mongo-data:

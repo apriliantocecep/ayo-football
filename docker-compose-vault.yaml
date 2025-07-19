@@ -1,0 +1,21 @@
+services:
+  vault:
+    hostname: vault
+    container_name: vault-server
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://0.0.0.0:8200"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - "./conf:/vault/config"
+      - "vault-data:/vault/data"
+    entrypoint: vault server -config=/vault/config/config.hcl
+
+volumes:
+  vault-data:
+    driver: local
+    name: vault-data

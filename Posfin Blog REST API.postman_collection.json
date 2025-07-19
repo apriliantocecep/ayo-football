@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "91175197-9ba4-49db-95f1-b3eda872e304",
+		"name": "Posfin Blog REST API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2801839"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"const token = jsonData.access_token;",
+									"pm.collectionVariables.set(\"token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"dfads\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:41:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": \"invalid identity or password\"\n}"
+						},
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "402"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNlY2VwYXByaWxpYW50b0BnbWFpbC5jb20iLCJpc3MiOiJwb3NmaW4iLCJzdWIiOiI1NTAzNGM4NC1mOGE3LTQ0YzctYTEwMy05ZmU5NGI2ZTNlMDUiLCJleHAiOjE3NTI4NjA1OTUsIm5iZiI6MTc1Mjc3NDE5NSwiaWF0IjoxNzUyNzc0MTk1LCJqdGkiOiI5OGNmNDRjMC1mMmRlLTQ4YmYtODQ4NS0xZWYzODg0MWU2ODkifQ.JvxsiDD9V7gow7SDoEXHeGHNJZ44Ux5daNXeFj0FAkc\",\n    \"expire_at\": \"2025-07-19 00:43:15 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cecep Aprilianto\",\n    \"email\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Endah\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:39:02 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "74"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": \"d53bdccb-a2d0-4986-9a8d-5e85f5177560\",\n    \"username\": \"endahnhida\"\n}"
+						},
+						{
+							"name": "409",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Endah\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:37 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "33"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": \"email already exists\"\n}"
+						},
+						{
+							"name": "400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": {\n        \"Name\": \"Name is required\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "articles",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"TEST publish publish new title for moderation\",\n    \"content\": \"TEST publish publish this is broker <strong>content HTML 080090</strong>\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/articles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"TEST publish publish new title for moderation\",\n    \"content\": \"TEST publish publish this is broker <strong>content HTML 080090</strong>\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/articles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"articles"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 18:15:22 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "58"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"article_id\": \"687a8f3aba99ae5ef7aae048\",\n    \"status\": \"draft\"\n}"
+						}
+					]
+				},
+				{
+					"name": "publish for moderation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/articles/:articleId/publish",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"articles",
+								":articleId",
+								"publish"
+							],
+							"variable": [
+								{
+									"key": "articleId",
+									"value": "687a8f3aba99ae5ef7aae048"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/articles/:articleId/publish",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"articles",
+										":articleId",
+										"publish"
+									],
+									"variable": [
+										{
+											"key": "articleId",
+											"value": "687a8f3aba99ae5ef7aae048"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 18:15:29 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"sent for content moderation\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get all my articles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/articles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/articles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"articles"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 18 Jul 2025 18:59:32 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2019"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"687a26f491420841af4e6ced\",\n            \"status\": \"draft\",\n            \"content\": \"this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a3b3ceddc1fb05948fe0c\",\n            \"status\": \"draft\",\n            \"content\": \"AAAAA this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a858830d962a4ba6e4dec\",\n            \"status\": \"draft\",\n            \"content\": \"TEST publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a874330d962a4ba6e4ded\",\n            \"status\": \"draft\",\n            \"content\": \"TEST acc publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a883930d962a4ba6e4dee\",\n            \"status\": \"draft\",\n            \"content\": \"TEST acc publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a88ba30d962a4ba6e4def\",\n            \"status\": \"draft\",\n            \"content\": \"TEST acc publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a899c30d962a4ba6e4df0\",\n            \"status\": \"draft\",\n            \"content\": \"TEST acc publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a8a8630d962a4ba6e4df1\",\n            \"status\": \"draft\",\n            \"content\": \"TEST reject anjing publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a8ef1ba99ae5ef7aae047\",\n            \"status\": \"rejected\",\n            \"content\": \"TEST reject anjing publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        },\n        {\n            \"id\": \"687a8f3aba99ae5ef7aae048\",\n            \"status\": \"published\",\n            \"content\": \"TEST publish publish this is broker <strong>content HTML 080090</strong>\",\n            \"user_id\": \"4d455259-48f0-4c6f-b0f0-53bd218fea70\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

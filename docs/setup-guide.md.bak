@@ -1,0 +1,157 @@
+# Setup Guide - Content Publisher Microservice
+
+Dokumen ini menjelaskan cara menjalankan sistem backend Content Publisher berbasis microservices secara lokal menggunakan Docker Compose.
+
+---
+
+## 🔧 Prasyarat
+
+Sebelum menjalankan proyek ini, pastikan kamu sudah menginstal:
+
+- [Docker](https://www.docker.com/)
+- [Go](https://golang.org/dl/) (jika ingin build manual)
+- [protoc](https://grpc.io/docs/languages/go/quickstart/) (quick start untuk golang jika ingin generate kode dari `.proto`)
+
+---
+
+# Step 1 - Clone Repository
+
+```shell
+git clone https://github.com/apriliantocecep/posfin-blog.git
+```
+
+# Step 2 -  ⚠️ Wajib! Jalankan Vault
+
+Jalankan vault untuk pertama kali, masuk ke directory yang sudah kamu clone, lalu ketikan perintah berikut:
+
+```shell
+docker compose -f vault/docker-compose-vault.yaml up -d
+```
+
+Ikuti langkah-langkah selanjutnya untuk menyiapkan kredensial vault
+
+## 1. Dapatkan token
+
+Setelah berhasil menjalankan vault dengan docker, lalu ketikan perintah berikut untuk meng-copy kredensial token yang ada
+
+```shell
+docker exec -it vault-server sh
+```
+
+setelah masuk ke shell, ketikan perintah berikut untuk Inisialisasi Vault (⚠️ sekali saja):
+
+```shell
+vault operator init
+```
+
+maka akan muncul tampilan seprti berikut:
+
+![](assets/vault-operator-init.png)
+
+Simpan output-nya (unseal keys dan initial root token) dengan aman. Kamu akan membutuhkannya nanti.
+
+## 2. Buka vault UI
+
+Buka alamat vault ui di browser http://localhost:8200 dan masukan setiap unseal keys yang sudah didapatkan sebanyak 3 kali.
+
+![](assets/vault-ui-unseal.png)
+
+Lalu masukan root token untuk login.
+
+![](assets/vault-ui-token-login.png)
+
+## 3. Enable KV secret engine
+
+Buka menu `Secrets Engines`, lalu klik tombol `Enable new engine +`, kemudian pilih `KV` di bagian `Generic`.
+
+Isi `Path` dengan nama `posfin` dan pastikan menggunakan version 2, lihat pada gambar berikut:
+
+![](assets/vault-ui-enable-secret-engine-kv.png)
+
+Kemudian klik tombol `Enable engine`
+
+## 4. Buat secret value `config`
+
+Klik `posfin` pada list yang ada di halaman `Secrets Engines`, kemudian klik tombol `Create secret +`.
+
+Klik switch JSON, dan masukan pada input `Path for this secret` dengan nama `config`.
+
+Pada bagian `Secret data`, masukan json berikut:
+
+```json
+{
+  "ARTICLE_SERVICE_PORT": "8002",
+  "ARTICLE_SERVICE_URL": "article-srv",
+  "AUTH_SERVICE_PORT": "8001",
+  "AUTH_SERVICE_URL": "auth-srv",
+  "GATEWAY_PORT": "8000",
+  "MODERATION_SERVICE_PORT": "8003",
+  "MODERATION_SERVICE_URL": "moderation-srv",
+  "RABBITMQ_URL": "amqp://guest:guest@rabbitmq-server:5672/"
+}
+```
+Kemudian klik tombol `Save`.
+
+## 5. Buat secret value `auth-service`
+
+Klik `posfin` pada list yang ada di halaman `Secrets Engines`, kemudian klik tombol `Create secret +`.
+
+Klik switch JSON, dan masukan pada input `Path for this secret` dengan nama `auth-service`.
+
+Pada bagian `Secret data`, masukan json berikut:
+
+```json
+{
+  "DATABASE_URL": "host=pgsql-server user=root password=admin dbname=posfin port=5432 sslmode=disable TimeZone=Asia/Jakarta",
+  "JWT_ACCESS_TOKEN_EXPIRATION_MINUTES": "1440",
+  "JWT_ISSUER": "posfin",
+  "JWT_SECRET_KEY": "9232c8cd6cfc4c4ed3cb848682bc883dfb8964f3f04cc0811f56ff0c49ad20f68aec62c5eb40ce0235f0dc7f51bd8a3f"
+}
+```
+Kemudian klik tombol `Save`.
+
+## 6. Buat secret value `article-service`
+
+Klik `posfin` pada list yang ada di halaman `Secrets Engines`, kemudian klik tombol `Create secret +`.
+
+Klik switch JSON, dan masukan pada input `Path for this secret` dengan nama `article-service`.
+
+Pada bagian `Secret data`, masukan json berikut:
+
+```json
+{
+  "DATABASE_URL": "mongodb://root:admin@mongodb-server:27017/?authMechanism=SCRAM-SHA-1"
+}
+```
+Kemudian klik tombol `Save`.
+
+# Step 3 - Buat file `.env`
+
+Buat file dengan nama `.env` pada root proyek, lalu masukan dengan kredensial vault yang sudah di dapatkan sebelumnya
+
+```dotenv
+VAULT_ADDR=http://localhost:8200
+VAULT_TOKEN=hvs.<isi-dengan-token>
+```
+
+# Step 4 -  Jalankan docker compose utama
+
+Pada langkah ini, kamu harus menjalankan perintah docker compose untuk membuat provisioning microservice.
+
+Termasuk didalamnya yaitu RabbitMQ, Database Postgre dan MongoDb.
+
+Jalankan perintah berikut:
+
+```shell
+docker compose up -d --build
+```
+
+Catatan:
+
+Jika terdapat konfigurasi tambahan atau modifikasi pada file docker-compose.yaml, lebih baik jalankan perintah berikut terlebih dahulu
+
+```shell
+docker compose down -v
+```
+
+# Step 4 -  ⚠️ Wajib! Jalankan RabbitMQ 🐰

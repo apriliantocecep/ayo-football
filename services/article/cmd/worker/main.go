@@ -50,6 +50,7 @@ func main() {
 	wg.Add(1) // wg.Add(total_consumer)
 	go func() {
 		defer wg.Done()
+		log.Println("[worker] MetadataConsumer started")
 		runMetadataConsumer(ctx, rabbitMQClient.Channel, moderationUseCase)
 	}()
 
