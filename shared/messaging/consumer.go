@@ -6,11 +6,21 @@ import (
 	"log"
 )
 
-type ConsumerHandler func(delivery amqp.Delivery) error
+type ConsumerHandler func(delivery *amqp.Delivery) error
 
-func ConsumeQueue(ctx context.Context, channel *amqp.Channel, queueName string, handler ConsumerHandler) {
-	// NOTE: Because we might start the consumer before the publisher, we want to make sure
-	// the queue exists before we try to consume messages from it.
+func ConsumeQueue(ctx context.Context, rabbitMQConn *amqp.Connection, queueName string, handler ConsumerHandler) {
+	channel, err := rabbitMQConn.Channel()
+	if err != nil {
+		log.Fatalf("[consumer] failed to open a channel for queue '%s' : %v", queueName, err)
+	}
+	defer func(ch *amqp.Channel) {
+		err = ch.Close()
+		if err != nil {
+			log.Fatalf("[consumer] failed closing a channel for queue '%s' : %v", queueName, err)
+		}
+	}(channel)
+
+	// NOTE: Because we might start the consumer before the publisher, we want to make sure the queue exists before we try to consume messages from it.
 	q, err := channel.QueueDeclare(
 		queueName, // name
 		true,      // durable
@@ -46,7 +56,7 @@ func ConsumeQueue(ctx context.Context, channel *amqp.Channel, queueName string, 
 			run = false
 		default:
 			for d := range msgs {
-				err = handler(d)
+				err = handler(&d)
 				if err != nil {
 					log.Fatalf("failed to process message: %v", err)
 				}

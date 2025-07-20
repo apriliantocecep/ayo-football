@@ -12,7 +12,7 @@ COPY shared ./shared
 COPY services/auth ./services/auth
 
 # Build the Go binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o auth-service ./services/auth/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o auth-service ./services/auth/cmd/main.go
 
 # ---------- Stage 2: Run ----------
 FROM gcr.io/distroless/static-debian12

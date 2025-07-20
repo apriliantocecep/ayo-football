@@ -14,7 +14,7 @@ type MetadataConsumer struct {
 	ModerationUseCase *usecase.ModerationUseCase
 }
 
-func (c *MetadataConsumer) Consume(delivery amqp.Delivery) error {
+func (c *MetadataConsumer) Consume(delivery *amqp.Delivery) error {
 	metadataEvent := new(sharedmodel.MetadataEvent)
 	err := json.Unmarshal(delivery.Body, metadataEvent)
 	if err != nil {

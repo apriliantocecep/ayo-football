@@ -81,6 +81,22 @@ services:
       - rabbitmq-server
     restart: unless-stopped
 
+  auth-worker:
+    build:
+      context: .
+      dockerfile: auth-worker.dockerfile
+    container_name: auth-worker
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    depends_on:
+      - vault
+      - vault-init
+      - auth-srv
+      - pgsql-server
+      - rabbitmq-server
+    restart: unless-stopped
+
   article-srv:
     build:
       context: .
@@ -147,6 +163,9 @@ services:
     build:
       context: .
       dockerfile: gateway-service.dockerfile
+      platforms:
+        - linux/amd64
+    platform: linux/amd64
     container_name: gateway-srv
     environment:
       - VAULT_ADDR=${VAULT_ADDR}

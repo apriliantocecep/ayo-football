@@ -10,10 +10,10 @@ type MetadataPublisher struct {
 	sharedmessaging.Publisher[*sharedmodel.MetadataEvent]
 }
 
-func NewMetadataPublisher(channel *amqp.Channel, queueName string, routingKey string) *MetadataPublisher {
+func NewMetadataPublisher(rabbitMQConn *amqp.Connection, queueName string, routingKey string) *MetadataPublisher {
 	return &MetadataPublisher{
 		Publisher: sharedmessaging.Publisher[*sharedmodel.MetadataEvent]{
-			Channel:      channel,
+			RabbitMQConn: rabbitMQConn,
 			QueueName:    queueName,
 			RoutingKey:   routingKey,
 			ExchangeName: "article",

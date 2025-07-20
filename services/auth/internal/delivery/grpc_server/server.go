@@ -47,6 +47,24 @@ func (a *AuthServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.
 	}, nil
 }
 
+func (a *AuthServer) RegisterWithQueue(ctx context.Context, in *pb.RegisterWithQueueRequest) (*pb.RegisterWithQueueResponse, error) {
+	req := model.RegisterRequest{
+		Name:     in.Name,
+		Email:    in.Email,
+		Password: in.Password,
+	}
+
+	res, err := a.UserUseCase.RegisterWithQueue(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.RegisterWithQueueResponse{
+		UserId:   res.UserId,
+		Username: res.Username,
+	}, nil
+}
+
 func (a *AuthServer) ValidateToken(ctx context.Context, in *pb.ValidateTokenRequest) (*pb.ValidateTokenResponse, error) {
 	userId, err := a.UserUseCase.ValidateToken(ctx, in.GetToken())
 	if err != nil {

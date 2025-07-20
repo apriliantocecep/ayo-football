@@ -33,7 +33,7 @@ func main() {
 	}(rabbitMQClient.Conn)
 
 	// setup publisher
-	metadataPublisher := gatewaymessaging.NewMetadataPublisher(rabbitMQClient.Channel, "moderation_checker", "moderation_checker")
+	metadataPublisher := gatewaymessaging.NewMetadataPublisher(rabbitMQClient.Conn, "moderation_checker", "moderation_checker")
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
@@ -55,12 +55,12 @@ func main() {
 	go func() {
 		defer wg.Done()
 		log.Println("[worker] ArticleCreatedConsumer started")
-		runArticleCreatedConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
+		runArticleCreatedConsumer(ctx, rabbitMQClient.Conn, metadataUseCase, moderationUseCase)
 	}()
 	go func() {
 		defer wg.Done()
 		log.Println("[worker] ArticleModerationConsumer started")
-		runArticleModerationConsumer(ctx, rabbitMQClient.Channel, metadataUseCase, moderationUseCase)
+		runArticleModerationConsumer(ctx, rabbitMQClient.Conn, metadataUseCase, moderationUseCase)
 	}()
 
 	// signal shutdown
@@ -86,12 +86,12 @@ func main() {
 	//time.Sleep(5 * time.Second) // wait for all consumers to finish processing
 }
 
-func runArticleCreatedConsumer(ctx context.Context, channel *amqp.Channel, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
+func runArticleCreatedConsumer(ctx context.Context, rabbitMQConn *amqp.Connection, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
 	consumer := messaging.NewArticleConsumer(metadataUseCase, moderationUseCase)
-	sharedmessaging.ConsumeQueue(ctx, channel, "article_created", consumer.ConsumeArticleCreated)
+	sharedmessaging.ConsumeQueue(ctx, rabbitMQConn, "article_created", consumer.ConsumeArticleCreated)
 }
 
-func runArticleModerationConsumer(ctx context.Context, channel *amqp.Channel, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
+func runArticleModerationConsumer(ctx context.Context, rabbitMQConn *amqp.Connection, metadataUseCase *usecase.MetadataUseCase, moderationUseCase *usecase.ModerationUseCase) {
 	consumer := messaging.NewArticleConsumer(metadataUseCase, moderationUseCase)
-	sharedmessaging.ConsumeQueue(ctx, channel, "article_moderation", consumer.ConsumeArticleModeration)
+	sharedmessaging.ConsumeQueue(ctx, rabbitMQConn, "article_moderation", consumer.ConsumeArticleModeration)
 }

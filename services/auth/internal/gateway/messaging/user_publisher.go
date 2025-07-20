@@ -6,13 +6,13 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type ArticlePublisher struct {
-	sharedmessaging.Publisher[*sharedmodel.ArticleEvent]
+type UserPublisher struct {
+	sharedmessaging.Publisher[*sharedmodel.UserEvent]
 }
 
-func NewArticlePublisher(rabbitMQConn *amqp.Connection, queueName string, routingKey string) *ArticlePublisher {
-	return &ArticlePublisher{
-		Publisher: sharedmessaging.Publisher[*sharedmodel.ArticleEvent]{
+func NewUserPublisher(rabbitMQConn *amqp.Connection, queueName string, routingKey string) *UserPublisher {
+	return &UserPublisher{
+		Publisher: sharedmessaging.Publisher[*sharedmodel.UserEvent]{
 			RabbitMQConn: rabbitMQConn,
 			QueueName:    queueName,
 			RoutingKey:   routingKey,

@@ -22,3 +22,14 @@ type RegisterResponse struct {
 	UserId   string
 	Username string
 }
+
+type CreateUserRequest struct {
+	Name     string
+	Email    string
+	Username string
+	Password string
+}
+
+type CreateUserResponse struct {
+	UserId string
+}

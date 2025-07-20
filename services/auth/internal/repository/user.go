@@ -50,6 +50,10 @@ func (u *UserRepository) FindByUsername(db *gorm.DB, username string) (*entity.U
 	return &user, nil
 }
 
+func (u *UserRepository) FindByEmailOrUsername(db *gorm.DB, email, username string, user *entity.User) error {
+	return db.Where("email = ? OR username = ?", email, username).First(user).Error
+}
+
 func NewUserRepository() *UserRepository {
 	return &UserRepository{}
 }

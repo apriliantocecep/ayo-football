@@ -14,6 +14,7 @@ func (r *AuthRoutes) Setup() {
 	auth := r.App.Group("auth")
 	auth.Post("/login", r.AuthHandler.Login)
 	auth.Post("/register", r.AuthHandler.Register)
+	auth.Post("/register/queue", r.AuthHandler.RegisterWithQueue)
 }
 
 func NewAuthRoutes(app *fiber.App, authHandler *http.AuthHandler) *AuthRoutes {

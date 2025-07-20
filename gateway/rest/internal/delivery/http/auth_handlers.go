@@ -46,6 +46,38 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 	})
 }
 
+func (h *AuthHandler) RegisterWithQueue(c *fiber.Ctx) error {
+	request := new(model.RegisterRequest)
+	err := c.BodyParser(request)
+	if err != nil {
+		return &fiber.Error{
+			Code:    fiber.ErrUnprocessableEntity.Code,
+			Message: err.Error(),
+		}
+	}
+
+	err = h.Validate.Struct(request)
+	if err != nil {
+		return err
+	}
+
+	req := pb.RegisterWithQueueRequest{
+		Email:    request.Email,
+		Password: request.Password,
+		Name:     request.Name,
+	}
+
+	res, err := h.AuthServiceClient.Client.RegisterWithQueue(c.UserContext(), &req)
+	if err != nil {
+		return utils.HandleGrpcError(err)
+	}
+
+	return c.JSON(fiber.Map{
+		"user_id":  res.GetUserId(),
+		"username": res.GetUsername(),
+	})
+}
+
 func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	request := new(model.LoginRequest)
 	err := c.BodyParser(request)

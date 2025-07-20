@@ -12,7 +12,7 @@ COPY shared ./shared
 COPY services/moderation ./services/moderation
 
 # Build the Go binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o moderation-service ./services/moderation/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o moderation-service ./services/moderation/cmd/main.go
 
 # ---------- Stage 2: Run ----------
 FROM gcr.io/distroless/static-debian12

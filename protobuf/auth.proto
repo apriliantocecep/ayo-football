@@ -5,6 +5,7 @@ option go_package = "github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc RegisterWithQueue(RegisterWithQueueRequest) returns (RegisterWithQueueResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc GetUserById(GetUserByIdRequest) returns (User);
 }
@@ -26,6 +27,17 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
+  string user_id = 1;
+  string username = 2;
+}
+
+message RegisterWithQueueRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+
+message RegisterWithQueueResponse {
   string user_id = 1;
   string username = 2;
 }

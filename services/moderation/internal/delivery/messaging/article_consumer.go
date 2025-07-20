@@ -15,7 +15,7 @@ type ArticleConsumer struct {
 	ModerationUseCase *usecase.ModerationUseCase
 }
 
-func (c *ArticleConsumer) ConsumeArticleModeration(delivery amqp.Delivery) error {
+func (c *ArticleConsumer) ConsumeArticleModeration(delivery *amqp.Delivery) error {
 	articleEvent := new(sharedmodel.ArticleEvent)
 	err := json.Unmarshal(delivery.Body, articleEvent)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *ArticleConsumer) ConsumeArticleModeration(delivery amqp.Delivery) error
 	return nil
 }
 
-func (c *ArticleConsumer) ConsumeArticleCreated(delivery amqp.Delivery) error {
+func (c *ArticleConsumer) ConsumeArticleCreated(delivery *amqp.Delivery) error {
 	articleEvent := new(sharedmodel.ArticleEvent)
 	err := json.Unmarshal(delivery.Body, articleEvent)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"time"
 )
@@ -25,7 +26,9 @@ func NewDatabase(vaultClient *shared.VaultClient) *Database {
 	if dsn == nil || dsn == "" {
 		log.Fatalln("DATABASE_URL is not set")
 	}
-	db, err := gorm.Open(postgres.Open(dsn.(string)), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn.(string)), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
 	}
@@ -37,7 +40,7 @@ func NewDatabase(vaultClient *shared.VaultClient) *Database {
 
 	conn.SetMaxIdleConns(10)
 	conn.SetMaxOpenConns(100)
-	conn.SetConnMaxLifetime(time.Duration(300) * time.Second)
+	conn.SetConnMaxLifetime(time.Hour)
 
 	// Auto Migrate
 	err = db.AutoMigrate(

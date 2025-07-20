@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/config"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/delivery/messaging"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/repository"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/usecase"
+	"database/sql"
+	"github.com/apriliantocecep/posfin-blog/services/auth/internal/config"
+	"github.com/apriliantocecep/posfin-blog/services/auth/internal/delivery/messaging"
+	"github.com/apriliantocecep/posfin-blog/services/auth/internal/repository"
+	"github.com/apriliantocecep/posfin-blog/services/auth/internal/usecase"
 	"github.com/apriliantocecep/posfin-blog/shared"
 	sharedlib "github.com/apriliantocecep/posfin-blog/shared/lib"
 	sharedmessaging "github.com/apriliantocecep/posfin-blog/shared/messaging"
@@ -32,16 +33,14 @@ func main() {
 
 	// dependencies
 	database := config.NewDatabase(vaultClient)
-	defer func() {
-		ctx := context.Background()
-		if err := database.Client.Disconnect(ctx); err != nil {
+	defer func(Conn *sql.DB) {
+		err := Conn.Close()
+		if err != nil {
 			log.Fatalf("error closing db: %v", err)
 		}
-	}()
-	articleDb := database.Client.Database("posfin")
-	articleCollection := articleDb.Collection("articles")
-	articleRepository := repository.NewArticleRepository(articleCollection)
-	moderationUseCase := usecase.NewModerationUseCase(database.Client, articleRepository)
+	}(database.Conn)
+	userRepository := repository.NewUserRepository()
+	registerUseCase := usecase.NewRegisterUseCase(database.DB, userRepository)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	var wg sync.WaitGroup
@@ -50,8 +49,8 @@ func main() {
 	wg.Add(1) // wg.Add(total_consumer)
 	go func() {
 		defer wg.Done()
-		log.Println("[worker] MetadataConsumer started")
-		runMetadataConsumer(ctx, rabbitMQClient.Conn, moderationUseCase)
+		log.Println("[worker] UserCreatedConsumer started")
+		runUserCreatedConsumer(ctx, rabbitMQClient.Conn, registerUseCase)
 	}()
 
 	// signal shutdown
@@ -65,7 +64,7 @@ func main() {
 	log.Println("All consumers stopped gracefully.")
 }
 
-func runMetadataConsumer(ctx context.Context, rabbitMQConn *amqp.Connection, moderationUseCase *usecase.ModerationUseCase) {
-	consumer := messaging.NewMetadataConsumer(moderationUseCase)
-	sharedmessaging.ConsumeQueue(ctx, rabbitMQConn, "moderation_checker", consumer.Consume)
+func runUserCreatedConsumer(ctx context.Context, rabbitMQConn *amqp.Connection, registerUseCase *usecase.RegisterUseCase) {
+	consumer := messaging.NewUserConsumer(registerUseCase)
+	sharedmessaging.ConsumeQueue(ctx, rabbitMQConn, "user_created", consumer.ConsumeUserCreated)
 }

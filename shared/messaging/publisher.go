@@ -10,7 +10,7 @@ import (
 )
 
 type Publisher[T sharedmodel.Event] struct {
-	Channel      *amqp.Channel
+	RabbitMQConn *amqp.Connection
 	QueueName    string
 	RoutingKey   string
 	ExchangeName string
@@ -34,7 +34,19 @@ func (p *Publisher[T]) Publish(event T) error {
 		log.Println("failed to marshal event")
 	}
 
-	_, err = p.Channel.QueueDeclare(
+	channel, err := p.RabbitMQConn.Channel()
+	if err != nil {
+		log.Printf("[publisher] failed to open a channel for queue '%s' : %v", p.GetQueueName(), err)
+		return err
+	}
+	defer func(ch *amqp.Channel) {
+		err = ch.Close()
+		if err != nil {
+			log.Fatalf("[publisher] failed closing a channel for queue '%s' : %v", p.GetQueueName(), err)
+		}
+	}(channel)
+
+	_, err = channel.QueueDeclare(
 		p.GetQueueName(), // name
 		true,             // durable
 		false,            // delete when unused
@@ -52,7 +64,7 @@ func (p *Publisher[T]) Publish(event T) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err = p.Channel.PublishWithContext(ctx,
+	err = channel.PublishWithContext(ctx,
 		p.GetExchangeName(), // exchange
 		p.GetRoutingKey(),   // routing key
 		false,               // mandatory

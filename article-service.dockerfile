@@ -12,7 +12,7 @@ COPY shared ./shared
 COPY services/article ./services/article
 
 # Build the Go binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o article-service ./services/article/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o article-service ./services/article/cmd/main.go
 
 # ---------- Stage 2: Run ----------
 FROM gcr.io/distroless/static-debian12

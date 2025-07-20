@@ -11,10 +11,10 @@ import (
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"google.golang.org/grpc"
 	"log"
+	"time"
 )
 
 func main() {
@@ -22,11 +22,15 @@ func main() {
 	app := fiber.New(fiber.Config{
 		AppName:      "Posfin Service Gateway",
 		ErrorHandler: newErrorHandler(),
+		IdleTimeout:  time.Second * 5,
+		ReadTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 5,
+		Prefork:      true,
 	})
 	app.Use(recover.New())
-	app.Use(logger.New(logger.Config{
-		TimeZone: "Asia/Jakarta",
-	}))
+	//app.Use(logger.New(logger.Config{
+	//	TimeZone: "Asia/Jakarta",
+	//}))
 
 	// start vault client
 	vaultClient := shared.NewVaultClient()
@@ -71,7 +75,7 @@ func main() {
 
 	err := app.Listen(fmt.Sprintf(":%d", port))
 	if err != nil {
-		log.Fatalf("failed to start gateway server: %v", err)
+		log.Panicf("failed to start gateway server: %+v\n", err)
 	}
 }
 

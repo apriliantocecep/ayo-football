@@ -8,8 +8,7 @@ import (
 )
 
 type RabbitMQClient struct {
-	Conn    *amqp.Connection
-	Channel *amqp.Channel
+	Conn *amqp.Connection
 }
 
 func NewRabbitMQClient(vaultClient *shared.VaultClient) *RabbitMQClient {
@@ -24,13 +23,7 @@ func NewRabbitMQClient(vaultClient *shared.VaultClient) *RabbitMQClient {
 		log.Fatalf("failed to connect to RabbitMQ: %v", err)
 	}
 
-	channel, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("failed to open a channel RabbitMQ: %v", err)
-	}
-
 	return &RabbitMQClient{
-		Conn:    conn,
-		Channel: channel,
+		Conn: conn,
 	}
 }

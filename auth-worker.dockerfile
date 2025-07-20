@@ -9,10 +9,10 @@ RUN go mod download
 
 # Copy the source code
 COPY shared ./shared
-COPY services/article ./services/article
+COPY services/auth ./services/auth
 
 # Build the Go binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o article-worker ./services/article/cmd/worker/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o auth-worker ./services/auth/cmd/worker/main.go
 
 # ---------- Stage 2: Run ----------
 FROM gcr.io/distroless/static-debian12
@@ -20,7 +20,7 @@ FROM gcr.io/distroless/static-debian12
 WORKDIR /
 
 # Copy binary from builder
-COPY --from=builder /app/article-worker /article-worker
+COPY --from=builder /app/auth-worker /auth-worker
 
 # Run binary
-ENTRYPOINT ["/article-worker"]
+ENTRYPOINT ["/auth-worker"]

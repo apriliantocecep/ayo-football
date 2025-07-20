@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName         = "/AuthService/Login"
-	AuthService_Register_FullMethodName      = "/AuthService/Register"
-	AuthService_ValidateToken_FullMethodName = "/AuthService/ValidateToken"
-	AuthService_GetUserById_FullMethodName   = "/AuthService/GetUserById"
+	AuthService_Login_FullMethodName             = "/AuthService/Login"
+	AuthService_Register_FullMethodName          = "/AuthService/Register"
+	AuthService_RegisterWithQueue_FullMethodName = "/AuthService/RegisterWithQueue"
+	AuthService_ValidateToken_FullMethodName     = "/AuthService/ValidateToken"
+	AuthService_GetUserById_FullMethodName       = "/AuthService/GetUserById"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -31,6 +32,7 @@ const (
 type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	RegisterWithQueue(ctx context.Context, in *RegisterWithQueueRequest, opts ...grpc.CallOption) (*RegisterWithQueueResponse, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
 	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*User, error)
 }
@@ -63,6 +65,16 @@ func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, o
 	return out, nil
 }
 
+func (c *authServiceClient) RegisterWithQueue(ctx context.Context, in *RegisterWithQueueRequest, opts ...grpc.CallOption) (*RegisterWithQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterWithQueueResponse)
+	err := c.cc.Invoke(ctx, AuthService_RegisterWithQueue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ValidateTokenResponse)
@@ -89,6 +101,7 @@ func (c *authServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequ
 type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	RegisterWithQueue(context.Context, *RegisterWithQueueRequest) (*RegisterWithQueueResponse, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
 	GetUserById(context.Context, *GetUserByIdRequest) (*User, error)
 	mustEmbedUnimplementedAuthServiceServer()
@@ -106,6 +119,9 @@ func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*Lo
 }
 func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedAuthServiceServer) RegisterWithQueue(context.Context, *RegisterWithQueueRequest) (*RegisterWithQueueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterWithQueue not implemented")
 }
 func (UnimplementedAuthServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
@@ -170,6 +186,24 @@ func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_RegisterWithQueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterWithQueueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RegisterWithQueue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RegisterWithQueue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RegisterWithQueue(ctx, req.(*RegisterWithQueueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ValidateTokenRequest)
 	if err := dec(in); err != nil {
@@ -220,6 +254,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _AuthService_Register_Handler,
+		},
+		{
+			MethodName: "RegisterWithQueue",
+			Handler:    _AuthService_RegisterWithQueue_Handler,
 		},
 		{
 			MethodName: "ValidateToken",

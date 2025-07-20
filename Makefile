@@ -11,10 +11,10 @@ gen:
 		$(PROTO_FILE)
 
 run:
-	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env | xargs) && go run services/$(SERVICE)/cmd/main.go'
+	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env.local | xargs) && go run services/$(SERVICE)/cmd/main.go'
 
 rest:
-	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env | xargs) && go run gateway/rest/cmd/main.go'
+	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env.local | xargs) && go run gateway/rest/cmd/main.go'
 
 run_worker:
-	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env | xargs) && go run services/$(SERVICE)/cmd/worker/main.go'
+	@bash -c 'export $$(grep -vE "^\s*#|^\s*$$" .env.local | xargs) && go run services/$(SERVICE)/cmd/worker/main.go'

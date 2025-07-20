@@ -42,6 +42,15 @@
       }
     },
     {
+      "name": "user_created",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
       "name": "article_moderation",
       "vhost": "/",
       "durable": true,
@@ -67,6 +76,14 @@
       "destination": "article_created",
       "destination_type": "queue",
       "routing_key": "article_created",
+      "arguments": {}
+    },
+    {
+      "source": "article",
+      "vhost": "/",
+      "destination": "user_created",
+      "destination_type": "queue",
+      "routing_key": "user_created",
       "arguments": {}
     },
     {
