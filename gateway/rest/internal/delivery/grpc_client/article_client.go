@@ -1,7 +1,6 @@
 package grpc_client
 
 import (
-	"fmt"
 	"github.com/apriliantocecep/posfin-blog/services/article/pkg/pb"
 	"github.com/apriliantocecep/posfin-blog/shared"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
@@ -18,19 +17,22 @@ type ArticleServiceClient struct {
 func NewArticleServiceClient(vaultClient *shared.VaultClient) *ArticleServiceClient {
 	secret := utils.GetVaultSecretConfig(vaultClient)
 
-	port := secret["ARTICLE_SERVICE_PORT"]
-	if port == nil || port == "" {
-		log.Fatalln("ARTICLE_SERVICE_PORT is not set")
+	proxyUrl := secret["ARTICLE_SERVICE_PROXY"]
+	if proxyUrl == nil || proxyUrl == "" {
+		log.Fatalln("ARTICLE_SERVICE_PROXY is not set")
 	}
-	url := secret["ARTICLE_SERVICE_URL"]
-	if url == nil || url == "" {
-		log.Fatalln("ARTICLE_SERVICE_URL is not set")
+	grpcProxyUrl := secret["TRAEFIK_GRPC_PROXY_URL"]
+	if grpcProxyUrl == nil || grpcProxyUrl == "" {
+		log.Fatalln("TRAEFIK_GRPC_PROXY_URL is not set")
 	}
 
-	target := fmt.Sprintf("%s:%s", url.(string), port.(string))
-	conn, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(
+		grpcProxyUrl.(string),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithAuthority(proxyUrl.(string)),
+	)
 	if err != nil {
-		log.Fatalf("did not connect to auth service: %v", err)
+		log.Fatalf("did not connect to article service: %v", err)
 	}
 
 	client := pb.NewArticleServiceClient(conn)

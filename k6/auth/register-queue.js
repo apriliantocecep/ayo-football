@@ -20,19 +20,20 @@ export let options = {
 export default function () {
     // Sample data untuk register - sesuaikan dengan API requirements
     const payload = JSON.stringify({
-        title: `user_${__VU}_${__ITER} CONTOH TITLE`,
-        content: `user_${__VU}_${__ITER} CONTOH CONTENT`,
+        name: `user_${__VU}_${__ITER}_queue`, // Unique username per VU and iteration
+        email: `user_${__VU}_${__ITER}_queue_${Math.random()}@example.com`,
+        password: 'testPassword123',
+        // Tambahkan field lain sesuai kebutuhan API Anda
     });
 
     const params = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNlY2VwYXByaWxpYW50b0BnbWFpbC5jb20iLCJpc3MiOiJwb3NmaW4iLCJzdWIiOiI5NzAxMzlkYS03MzYyLTQ0M2EtYjAyOC01ODA0NWQ1ZTIyNmEiLCJleHAiOjE3NTMxMzE3MzYsIm5iZiI6MTc1MzA0NTMzNiwiaWF0IjoxNzUzMDQ1MzM2LCJqdGkiOiJlMjAxNjBjYS00MjFiLTQ4ODEtYWJlYS01Y2Y4OWM3MGI0NWQifQ._HCllX_1uFjEo-5c4T4n5bYEXoM6vXZEtFgLcR9v-oE',
         },
     };
 
     // Send POST request to register endpoint
-    const response = http.post('http://localhost:8000/articles', payload, params);
+    const response = http.post('http://localhost:8000/auth/register/queue', payload, params);
 
     // Checks
     const result = check(response, {

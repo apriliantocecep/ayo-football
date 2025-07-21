@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/config"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/delivery/messaging"
 	"github.com/apriliantocecep/posfin-blog/services/article/internal/repository"
@@ -9,17 +10,45 @@ import (
 	"github.com/apriliantocecep/posfin-blog/shared"
 	sharedlib "github.com/apriliantocecep/posfin-blog/shared/lib"
 	sharedmessaging "github.com/apriliantocecep/posfin-blog/shared/messaging"
+	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/google/uuid"
+	capi "github.com/hashicorp/consul/api"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 )
 
 func main() {
 	// vault client
 	vaultClient := shared.NewVaultClient()
+
+	// consul client
+	consul := sharedlib.NewConsulClient(vaultClient)
+
+	// register service to consul
+	ttl := time.Second * 8
+	address := os.Getenv("SERVICE_URL")
+	if address == "" {
+		address = "127.0.0.1"
+	}
+	workerName := utils.Getenv("WORKER_NAME", uuid.NewString())
+	serviceName := "article-worker-cluster"
+	serviceRegisteredID := fmt.Sprintf("article-worker-%s", workerName)
+	checkID := fmt.Sprintf("worker:%s", serviceRegisteredID)
+	tags := []string{
+		"traefik.enable=false",
+		"role=worker",
+	}
+	consul.ServiceRegister(serviceRegisteredID, serviceName, address, 3000, &capi.AgentServiceCheck{
+		TTL:                            ttl.String(),
+		DeregisterCriticalServiceAfter: "1m",
+		TLSSkipVerify:                  true,
+		CheckID:                        checkID,
+	}, tags)
 
 	// rabbitmq client
 	rabbitMQClient := sharedlib.NewRabbitMQClient(vaultClient)
@@ -47,11 +76,16 @@ func main() {
 	var wg sync.WaitGroup
 
 	// run consumer
-	wg.Add(1) // wg.Add(total_consumer)
+	wg.Add(2) // wg.Add(total goroutine)
 	go func() {
 		defer wg.Done()
 		log.Println("[worker] MetadataConsumer started")
 		runMetadataConsumer(ctx, rabbitMQClient.Conn, moderationUseCase)
+	}()
+	go func() {
+		defer wg.Done()
+		log.Println("[worker] health check started")
+		consul.StartTTLHeartbeat(checkID, time.Second*5)
 	}()
 
 	// signal shutdown

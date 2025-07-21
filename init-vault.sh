@@ -12,12 +12,18 @@ echo "Menulis secret ke posfin/config..."
 vault kv put posfin/config \
   ARTICLE_SERVICE_PORT="8002" \
   ARTICLE_SERVICE_URL="article-srv" \
+  ARTICLE_SERVICE_PROXY="article-service-cluster.local" \
   AUTH_SERVICE_PORT="8001" \
   AUTH_SERVICE_URL="auth-srv" \
+  AUTH_SERVICE_PROXY="auth-service-cluster.local" \
   GATEWAY_PORT="8000" \
   MODERATION_SERVICE_PORT="8003" \
   MODERATION_SERVICE_URL="moderation-srv" \
-  RABBITMQ_URL="amqp://guest:guest@rabbitmq-server:5672/"
+  MODERATION_SERVICE_PROXY="moderation-service-cluster.local" \
+  RABBITMQ_URL="amqp://guest:guest@rabbitmq-server:5672/" \
+  CONSUL_URL="consul-server:8500" \
+  TRAEFIK_GRPC_PROXY_URL="traefik-server:9000" \
+  TRAEFIK_WEB_PROXY_URL="traefik-server:8081"
 
 echo "Menulis secret ke posfin/auth-service..."
 vault kv put posfin/auth-service \
