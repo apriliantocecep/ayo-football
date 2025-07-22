@@ -44,6 +44,9 @@ docker compose down -v
 
 - Buka http://localhost:8200/ untuk menjalankan Vault. Gunakan token `root` untuk masuk.
 - Buka http://localhost:15672/ untuk menjalankan RabbitMQ Web Management. Gunakan username dan password `guest`
+- Buka http://localhost:3000/ untuk menjalankan Grafana Dashboard. Buka `Tempo` di menu Explorer
+- Buka http://localhost:8500/ untuk menjalankan Consul (Service Discovery)
+- Buka http://localhost:8080/ untuk menjalankan Traefik (Load Balancer)
 
 # Step 4 - REST API Documentation
 
