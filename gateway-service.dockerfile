@@ -16,7 +16,8 @@ RUN go mod download
 
 # Copy the source code
 COPY shared ./shared
-COPY services ./services
+COPY services/auth ./services/auth
+COPY services/article ./services/article
 COPY gateway/rest ./gateway/rest
 
 # Build dengan CGO untuk fiber prefork

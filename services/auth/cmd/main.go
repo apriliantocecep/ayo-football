@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/config"
@@ -14,18 +15,52 @@ import (
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
 	capi "github.com/hashicorp/consul/api"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
+	oteltracing "google.golang.org/grpc/experimental/opentelemetry"
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/stats/opentelemetry"
 	"log"
 	"net"
 	"os"
 )
 
 func main() {
+	// setup vars
+	ctx := context.Background()
+	serviceName := "auth-service-cluster"
+	portStr := os.Getenv("PORT")
+	if portStr == "" {
+		log.Fatalln("PORT is not set")
+	}
+	port := utils.ParsePort(portStr)
+
+	url := os.Getenv("SERVICE_URL")
+	if url == "" {
+		log.Fatalln("SERVICE_URL is not set")
+	}
+	address := url
+
 	// vault client
 	vaultClient := shared.NewVaultClient()
 	//secret := utils.GetVaultSecretConfig(vaultClient)
+
+	// otel
+	otelSDK := sharedlib.NewOtelSDK(ctx, vaultClient, "auth-srv")
+	spanExporter, err := otelSDK.OTLPSpanExporter()
+	if err != nil {
+		log.Fatalf("failed to create OTLP trace exporter: %v", err)
+	}
+	tp := otelSDK.NewTraceProvider(spanExporter)
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Printf("error shutting down tracer provider: %v", err)
+		}
+	}()
+	otel.SetTracerProvider(tp)
+	//tracer := tp.Tracer("gateway.main.tracer")
+	prop := otelSDK.NewPropagator()
 
 	// consul client
 	consul := sharedlib.NewConsulClient(vaultClient)
@@ -55,23 +90,26 @@ func main() {
 	userUseCase := usecase.NewUserUseCase(userRepository, jwt, database.DB, userCreatedPublisher)
 
 	// grpc server
+	so := opentelemetry.ServerOption(opentelemetry.Options{
+		//MetricsOptions: opentelemetry.MetricsOptions{
+		//	MeterProvider: meterProvider,
+		//	// These are example experimental gRPC metrics, which are disabled
+		//	// by default and must be explicitly enabled. For the full,
+		//	// up-to-date list of metrics, see:
+		//	// https://grpc.io/docs/guides/opentelemetry-metrics/#instruments
+		//	Metrics: opentelemetry.DefaultMetrics().Add(
+		//		"grpc.server.call.started",
+		//		"grpc.server.call.duration",
+		//	),
+		//},
+		TraceOptions: oteltracing.TraceOptions{TracerProvider: tp, TextMapPropagator: prop}},
+	)
+
 	srv := grpc_server.NewAuthServer(userUseCase)
-	s := grpc.NewServer()
+	s := grpc.NewServer(so)
 	pb.RegisterAuthServiceServer(s, srv)
 
 	// listener
-	portStr := os.Getenv("PORT")
-	if portStr == "" {
-		log.Fatalln("PORT is not set")
-	}
-	port := utils.ParsePort(portStr)
-
-	url := os.Getenv("SERVICE_URL")
-	if url == "" {
-		log.Fatalln("SERVICE_URL is not set")
-	}
-	address := url
-
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -79,7 +117,6 @@ func main() {
 	log.Printf("server listening at %v", listen.Addr())
 
 	// register service to consul
-	serviceName := "auth-service-cluster"
 	serviceRegisteredID := fmt.Sprintf("auth-service-%d", port)
 	tags := []string{
 		"traefik.enable=true",

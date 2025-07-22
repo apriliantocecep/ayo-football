@@ -5,6 +5,7 @@ import (
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/model"
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/usecase"
 	"github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb"
+	"go.opentelemetry.io/otel"
 )
 
 type AuthServer struct {
@@ -30,13 +31,16 @@ func (a *AuthServer) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginR
 }
 
 func (a *AuthServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	startCtx, span := otel.Tracer("AuthServer").Start(ctx, "AuthServer.Register")
+	defer span.End()
+
 	req := model.RegisterRequest{
 		Name:     in.Name,
 		Email:    in.Email,
 		Password: in.Password,
 	}
 
-	res, err := a.UserUseCase.Register(ctx, &req)
+	res, err := a.UserUseCase.Register(startCtx, &req)
 	if err != nil {
 		return nil, err
 	}

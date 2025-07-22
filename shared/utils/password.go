@@ -1,8 +1,15 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"context"
+	"go.opentelemetry.io/otel"
+	"golang.org/x/crypto/bcrypt"
+)
 
-func HashPassword(password string) string {
+func HashPassword(ctx context.Context, password string) string {
+	_, span := otel.Tracer("utils.HashPassword").Start(ctx, "HashPassword")
+	defer span.End()
+
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes)
 }

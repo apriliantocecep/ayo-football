@@ -10,6 +10,8 @@ import (
 	"github.com/apriliantocecep/posfin-blog/services/auth/internal/repository"
 	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
@@ -25,30 +27,43 @@ type UserUseCase struct {
 }
 
 func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
-	password := utils.HashPassword(request.Password)
+	startCtx, span := otel.Tracer("UserUseCase").Start(ctx, "UserUseCase.Register")
+	defer span.End()
+
+	password := utils.HashPassword(startCtx, request.Password)
+	username := strings.Split(request.Email, "@")[0]
 
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	if _, err := u.UserRepository.FindByEmail(tx, request.Email); err == nil {
+	existingUser := new(entity.User)
+	err := u.UserRepository.FindByEmailOrUsername(startCtx, u.DB, request.Email, username, existingUser)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
+	}
+
+	if existingUser.Email == request.Email {
 		return nil, status.Errorf(codes.AlreadyExists, "email already exists")
 	}
 
-	// get username from email
-	username := strings.Split(request.Email, "@")
-
-	if _, err := u.UserRepository.FindByUsername(tx, username[0]); err == nil {
+	if existingUser.Username == username {
 		return nil, status.Errorf(codes.AlreadyExists, "username already exists")
 	}
 
 	user := entity.User{
 		Name:     request.Name,
 		Email:    request.Email,
-		Username: username[0],
+		Username: username,
 		Password: password,
 	}
+	span.SetAttributes(
+		attribute.String("user.name", request.Name),
+		attribute.String("user.email", request.Email),
+		attribute.String("user.username", username),
+		attribute.String("user.password", password),
+	)
 
-	userUuid, err := u.UserRepository.Create(tx, &user)
+	userUuid, err := u.UserRepository.Create(startCtx, tx, &user)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, "can not create user")
 	}
@@ -57,19 +72,19 @@ func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterReque
 		return nil, status.Errorf(codes.Aborted, "can not create user")
 	}
 
-	response := model.RegisterResponse{UserId: userUuid.String(), Username: username[0]}
+	response := model.RegisterResponse{UserId: userUuid.String(), Username: username}
 
 	return &response, nil
 }
 
 func (u *UserUseCase) RegisterWithQueue(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
-	password := utils.HashPassword(request.Password)
+	password := utils.HashPassword(ctx, request.Password)
 
 	// get username from email
 	username := strings.Split(request.Email, "@")[0]
 
 	existingUser := new(entity.User)
-	err := u.UserRepository.FindByEmailOrUsername(u.DB, request.Email, username, existingUser)
+	err := u.UserRepository.FindByEmailOrUsername(ctx, u.DB, request.Email, username, existingUser)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
 	}
@@ -103,9 +118,9 @@ func (u *UserUseCase) Login(ctx context.Context, request *model.LoginRequest) (*
 	userEntity, err := new(entity.User), *new(error)
 
 	if utils.ValidateEmail(request.Identity) {
-		userEntity, err = u.UserRepository.FindByEmail(u.DB, request.Identity)
+		userEntity, err = u.UserRepository.FindByEmail(ctx, u.DB, request.Identity)
 	} else {
-		userEntity, err = u.UserRepository.FindByUsername(u.DB, request.Identity)
+		userEntity, err = u.UserRepository.FindByUsername(ctx, u.DB, request.Identity)
 	}
 
 	if err != nil {

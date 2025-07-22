@@ -26,7 +26,7 @@ func (u *RegisterUseCase) CreateUser(ctx context.Context, request *model.CreateU
 		Password: request.Password,
 	}
 
-	userUuid, err := u.UserRepository.Create(tx, &user)
+	userUuid, err := u.UserRepository.Create(ctx, tx, &user)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, "can not create user")
 	}

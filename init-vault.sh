@@ -23,7 +23,9 @@ vault kv put posfin/config \
   RABBITMQ_URL="amqp://guest:guest@rabbitmq-server:5672/" \
   CONSUL_URL="consul-server:8500" \
   TRAEFIK_GRPC_PROXY_URL="traefik-server:9000" \
-  TRAEFIK_WEB_PROXY_URL="traefik-server:8081"
+  TRAEFIK_WEB_PROXY_URL="traefik-server:8081" \
+  OTEL_COLLECTOR_ENDPOINT_HTTP="otel-collector:4318" \
+  OTEL_COLLECTOR_ENDPOINT_GRPC="otel-collector:4317"
 
 echo "Menulis secret ke posfin/auth-service..."
 vault kv put posfin/auth-service \
