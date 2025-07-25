@@ -61,11 +61,27 @@ func (u *UserRepository) FindByUsername(ctx context.Context, db *gorm.DB, userna
 	return &user, nil
 }
 
-func (u *UserRepository) FindByEmailOrUsername(ctx context.Context, db *gorm.DB, email, username string, user *entity.User) error {
+func (u *UserRepository) FindByEmailOrUsername(ctx context.Context, db *gorm.DB, email, username string) (*entity.User, error) {
 	_, span := otel.Tracer("UserRepository").Start(ctx, "UserRepository.FindByEmailOrUsername")
 	defer span.End()
 
-	return db.Where("email = ? OR username = ?", email, username).First(user).Error
+	user := new(entity.User)
+
+	if err := db.Where(&entity.User{Username: username}).First(user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "identity not found")
+		}
+		return nil, err
+	}
+
+	if err := db.Where(&entity.User{Email: email}).First(user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "identity not found")
+		}
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func NewUserRepository() *UserRepository {

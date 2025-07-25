@@ -62,6 +62,18 @@ func main() {
 	//tracer := tp.Tracer("gateway.main.tracer")
 	prop := otelSDK.NewPropagator()
 
+	//metricExporter, err := otelSDK.OTLPMetricExporter()
+	//if err != nil {
+	//	log.Fatalf("failed to create OTLP metric exporter: %v", err)
+	//}
+	//meterProvider := otelSDK.NewMeterProvider(otelmetric.NewPeriodicReader(metricExporter))
+	//defer func() {
+	//	if err = meterProvider.Shutdown(ctx); err != nil {
+	//		log.Printf("error shutting down meter provider: %v", err)
+	//	}
+	//}()
+	//otel.SetMeterProvider(meterProvider)
+
 	// consul client
 	consul := sharedlib.NewConsulClient(vaultClient)
 

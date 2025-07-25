@@ -16,12 +16,12 @@ RUN go mod download
 
 # Copy the source code
 COPY shared ./shared
-COPY services/auth ./services/auth
-COPY services/article ./services/article
+COPY services/auth/pkg/pb ./services/auth/pkg/pb
+COPY services/article/pkg/pb ./services/article/pkg/pb
 COPY gateway/rest ./gateway/rest
 
 # Build dengan CGO untuk fiber prefork
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gateway-service ./gateway/rest/cmd/main.go
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false -ldflags="-s -w" -o gateway-service ./gateway/rest/cmd/main.go
 
 # Make sure binary is executable
 RUN chmod +x /app/gateway-service

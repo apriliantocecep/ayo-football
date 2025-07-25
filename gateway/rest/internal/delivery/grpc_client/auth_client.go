@@ -5,7 +5,6 @@ import (
 	"github.com/apriliantocecep/posfin-blog/shared"
 	"github.com/apriliantocecep/posfin-blog/shared/utils"
 	"go.opentelemetry.io/otel/propagation"
-	otelmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -19,7 +18,7 @@ type AuthServiceClient struct {
 	Conn   *grpc.ClientConn
 }
 
-func NewAuthServiceClient(vaultClient *shared.VaultClient, traceProvider trace.TracerProvider, textMapPropagator propagation.TextMapPropagator, meterProvider *otelmetric.MeterProvider) *AuthServiceClient {
+func NewAuthServiceClient(vaultClient *shared.VaultClient, traceProvider trace.TracerProvider, textMapPropagator propagation.TextMapPropagator) *AuthServiceClient {
 	secret := utils.GetVaultSecretConfig(vaultClient)
 
 	proxyUrl := secret["AUTH_SERVICE_PROXY"]

@@ -17,6 +17,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"strings"
+	"time"
 )
 
 type UserUseCase struct {
@@ -26,28 +27,53 @@ type UserUseCase struct {
 	UserCreatedPublisher *messaging.UserPublisher
 }
 
+func (u *UserUseCase) hashPassword(parentCtx context.Context, ctx context.Context, password string) (string, error) {
+	_, span := otel.Tracer("UserUseCase").Start(parentCtx, "UserUseCase.hashPassword")
+	defer span.End()
+
+	var passwordResultChan = make(chan utils.PasswordResult)
+	go utils.HashPasswordAsync(password, passwordResultChan)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return "", status.Errorf(codes.DeadlineExceeded, "context timeout")
+		case pass := <-passwordResultChan:
+			if pass.Err != nil {
+				return "", status.Errorf(codes.Internal, pass.Err.Error())
+			}
+			return pass.Password, nil
+		}
+	}
+}
+
 func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
 	startCtx, span := otel.Tracer("UserUseCase").Start(ctx, "UserUseCase.Register")
 	defer span.End()
 
-	password := utils.HashPassword(startCtx, request.Password)
+	userEntity, err := new(entity.User), *new(error)
+
+	hashCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	password, err := u.hashPassword(startCtx, hashCtx, request.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "hashing password error: %v", err)
+	}
 	username := strings.Split(request.Email, "@")[0]
 
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	existingUser := new(entity.User)
-	err := u.UserRepository.FindByEmailOrUsername(startCtx, u.DB, request.Email, username, existingUser)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
-	}
+	userEntity, err = u.UserRepository.FindByEmailOrUsername(startCtx, tx, request.Email, username)
+	if err == nil {
+		if userEntity.Email == request.Email {
+			return nil, status.Errorf(codes.AlreadyExists, "email already exists")
+		}
 
-	if existingUser.Email == request.Email {
-		return nil, status.Errorf(codes.AlreadyExists, "email already exists")
-	}
-
-	if existingUser.Username == username {
-		return nil, status.Errorf(codes.AlreadyExists, "username already exists")
+		if userEntity.Username == username {
+			return nil, status.Errorf(codes.AlreadyExists, "username already exists")
+		}
 	}
 
 	user := entity.User{
@@ -78,13 +104,15 @@ func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterReque
 }
 
 func (u *UserUseCase) RegisterWithQueue(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
-	password := utils.HashPassword(ctx, request.Password)
+	password, err := utils.HashPassword(ctx, request.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "error hashing password: %v", err)
+	}
 
 	// get username from email
 	username := strings.Split(request.Email, "@")[0]
 
-	existingUser := new(entity.User)
-	err := u.UserRepository.FindByEmailOrUsername(ctx, u.DB, request.Email, username, existingUser)
+	existingUser, err := u.UserRepository.FindByEmailOrUsername(ctx, u.DB, request.Email, username)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
 	}

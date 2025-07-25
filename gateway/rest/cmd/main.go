@@ -15,7 +15,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"go.opentelemetry.io/otel"
-	otelmetric "go.opentelemetry.io/otel/sdk/metric"
 	"google.golang.org/grpc"
 	"log"
 	"time"
@@ -58,20 +57,20 @@ func main() {
 	tracer := tp.Tracer("gateway.main.tracer")
 
 	prop := otelSDK.NewPropagator()
-	metricExporter, err := otelSDK.OTLPMetricExporter()
-	if err != nil {
-		log.Fatalf("failed to create OTLP metric exporter: %v", err)
-	}
-	meterProvider := otelSDK.NewMeterProvider(otelmetric.NewPeriodicReader(metricExporter))
-	defer func() {
-		if err = meterProvider.Shutdown(ctx); err != nil {
-			log.Printf("error shutting down meter provider: %v", err)
-		}
-	}()
-	otel.SetMeterProvider(meterProvider)
+	//metricExporter, err := otelSDK.OTLPMetricExporter()
+	//if err != nil {
+	//	log.Fatalf("failed to create OTLP metric exporter: %v", err)
+	//}
+	//meterProvider := otelSDK.NewMeterProvider(otelmetric.NewPeriodicReader(metricExporter))
+	//defer func() {
+	//	if err = meterProvider.Shutdown(ctx); err != nil {
+	//		log.Printf("error shutting down meter provider: %v", err)
+	//	}
+	//}()
+	//otel.SetMeterProvider(meterProvider)
 
 	// gRPC Clients
-	authServiceClient := grpc_client.NewAuthServiceClient(vaultClient, tp, prop, meterProvider)
+	authServiceClient := grpc_client.NewAuthServiceClient(vaultClient, tp, prop)
 	defer func(Conn *grpc.ClientConn) {
 		err := Conn.Close()
 		if err != nil {
