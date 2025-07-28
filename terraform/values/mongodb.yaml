@@ -1,0 +1,12 @@
+global:
+  security:
+    allowInsecureImages: true
+auth:
+  enabled: true
+  rootUser: root
+  rootPassword: admin
+architecture: standalone
+#image:
+#  registry: docker.io
+#  repository: arm64v8/mongo
+#  tag: 8.0.12

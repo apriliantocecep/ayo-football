@@ -6,5 +6,6 @@
         <method importPath="go.mongodb.org/mongo-driver/v2/mongo" receiver="*Collection" name="InsertOne" />
       </methods>
     </inspection_tool>
+    <inspection_tool class="MaybeTerraformTemplateInspection" enabled="false" level="WARNING" enabled_by_default="false" />
   </profile>
 </component>

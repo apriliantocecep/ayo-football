@@ -1,0 +1,33 @@
+server:
+  dev:
+    enabled: true
+    devRootToken: "root"
+
+  standalone:
+    enabled: false
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 8200
+    targetPort: 8200
+    annotations: {}
+
+  ingress:
+    enabled: true
+    labels: { }
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    ingressClassName: "nginx"
+    pathType: Prefix
+    activeService: false
+    hosts:
+      - host: vault.minikube
+        paths: [ "/" ]
+
+ui:
+  enabled: true
+  externalPort: 8200
+  targetPort: 8200

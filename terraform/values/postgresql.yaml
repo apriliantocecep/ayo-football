@@ -1,0 +1,9 @@
+auth:
+  username: root
+  password: admin
+  database: posfin
+primary:
+  service:
+    ports:
+      postgresql: 5432
+    type: ClusterIP

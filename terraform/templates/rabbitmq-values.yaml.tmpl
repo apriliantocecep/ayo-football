@@ -1,0 +1,24 @@
+auth:
+  username: guest
+  password: guest
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: rabbitmq.minikube
+  path: /
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  tls: false
+
+extraSecrets:
+  load-definition:
+    load_definition.json: |
+      ${load_definition}
+
+loadDefinition:
+  enabled: true
+  existingSecret: load-definition
+
+extraConfiguration: |
+  load_definitions = /app/load_definition.json

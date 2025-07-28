@@ -1,0 +1,106 @@
+{
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "users": [
+    {
+      "name": "guest",
+      "password": "guest",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "article",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "article_created",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "user_created",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "article_moderation",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "moderation_checker",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "article",
+      "vhost": "/",
+      "destination": "article_created",
+      "destination_type": "queue",
+      "routing_key": "article_created",
+      "arguments": {}
+    },
+    {
+      "source": "article",
+      "vhost": "/",
+      "destination": "user_created",
+      "destination_type": "queue",
+      "routing_key": "user_created",
+      "arguments": {}
+    },
+    {
+      "source": "article",
+      "vhost": "/",
+      "destination": "article_moderation",
+      "destination_type": "queue",
+      "routing_key": "article_moderation",
+      "arguments": {}
+    },
+    {
+      "source": "article",
+      "vhost": "/",
+      "destination": "moderation_checker",
+      "destination_type": "queue",
+      "routing_key": "moderation_checker",
+      "arguments": {}
+    }
+  ]
+}

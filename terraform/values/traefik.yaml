@@ -1,0 +1,28 @@
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik.minikube`)
+    entryPoints: ["web"]
+
+ports:
+  web:
+    expose:
+      default: true
+    exposedPort: 80
+
+  websecure:
+    expose:
+      default: true
+    exposedPort: 443
+
+  grpc:
+    port: 9000
+    expose:
+      default: true
+    exposedPort: 9000
+    protocol: TCP
+
+additionalArguments:
+  - "--providers.consulcatalog.endpoint.address=consul.demo.svc.cluster.local"
+  - "--providers.consulcatalog.exposedByDefault=true"
+  - "--providers.consulcatalog.defaultRule=Host(`{{ .Name }}.minikube`)"
