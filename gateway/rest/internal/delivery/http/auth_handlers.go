@@ -1,25 +1,20 @@
 package http
 
 import (
-	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/grpc_client"
-	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/grpc_client"
+	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/auth/pkg/pb"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type AuthHandler struct {
 	Validate          *validator.Validate
 	AuthServiceClient *grpc_client.AuthServiceClient
-	Tracer            trace.Tracer
 }
 
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
-	ctx, span := h.Tracer.Start(c.Context(), "AuthHandler.Register")
-	defer span.End()
-
 	request := new(model.RegisterRequest)
 	err := c.BodyParser(request)
 	if err != nil {
@@ -40,7 +35,7 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 		Name:     request.Name,
 	}
 
-	res, err := h.AuthServiceClient.Client.Register(ctx, &req)
+	res, err := h.AuthServiceClient.Client.Register(c.UserContext(), &req)
 	if err != nil {
 		return utils.HandleGrpcError(err)
 	}
@@ -114,6 +109,6 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	})
 }
 
-func NewAuthHandler(authServiceClient *grpc_client.AuthServiceClient, validator *validator.Validate, tracer trace.Tracer) *AuthHandler {
-	return &AuthHandler{AuthServiceClient: authServiceClient, Validate: validator, Tracer: tracer}
+func NewAuthHandler(authServiceClient *grpc_client.AuthServiceClient, validator *validator.Validate) *AuthHandler {
+	return &AuthHandler{AuthServiceClient: authServiceClient, Validate: validator}
 }

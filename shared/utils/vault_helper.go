@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/apriliantocecep/posfin-blog/shared"
+	"github.com/apriliantocecep/ayo-football/shared"
 	"log"
 	"strconv"
 )

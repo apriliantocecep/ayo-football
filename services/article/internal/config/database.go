@@ -2,8 +2,8 @@ package config
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"

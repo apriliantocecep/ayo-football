@@ -2,10 +2,9 @@ package grpc_server
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/usecase"
-	"github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb"
-	"go.opentelemetry.io/otel"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/usecase"
+	"github.com/apriliantocecep/ayo-football/services/auth/pkg/pb"
 )
 
 type AuthServer struct {
@@ -31,16 +30,13 @@ func (a *AuthServer) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginR
 }
 
 func (a *AuthServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	startCtx, span := otel.Tracer("AuthServer").Start(ctx, "AuthServer.Register")
-	defer span.End()
-
 	req := model.RegisterRequest{
 		Name:     in.Name,
 		Email:    in.Email,
 		Password: in.Password,
 	}
 
-	res, err := a.UserUseCase.Register(startCtx, &req)
+	res, err := a.UserUseCase.Register(ctx, &req)
 	if err != nil {
 		return nil, err
 	}
@@ -52,21 +48,7 @@ func (a *AuthServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.
 }
 
 func (a *AuthServer) RegisterWithQueue(ctx context.Context, in *pb.RegisterWithQueueRequest) (*pb.RegisterWithQueueResponse, error) {
-	req := model.RegisterRequest{
-		Name:     in.Name,
-		Email:    in.Email,
-		Password: in.Password,
-	}
-
-	res, err := a.UserUseCase.RegisterWithQueue(ctx, &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.RegisterWithQueueResponse{
-		UserId:   res.UserId,
-		Username: res.Username,
-	}, nil
+	panic("implement me")
 }
 
 func (a *AuthServer) ValidateToken(ctx context.Context, in *pb.ValidateTokenRequest) (*pb.ValidateTokenResponse, error) {

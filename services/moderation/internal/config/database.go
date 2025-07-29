@@ -2,9 +2,9 @@ package config
 
 import (
 	"database/sql"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/entity"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"

@@ -130,7 +130,7 @@ const file_moderation_proto_rawDesc = "" +
 	"article_id\x18\x01 \x01(\tR\tarticleId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status2V\n" +
 	"\x11ModerationService\x12A\n" +
-	"\x0ePublishArticle\x12\x16.PublishArticleRequest\x1a\x17.PublishArticleResponseBCZAgithub.com/apriliantocecep/posfin-blog/services/moderation/pkg/pbb\x06proto3"
+	"\x0ePublishArticle\x12\x16.PublishArticleRequest\x1a\x17.PublishArticleResponseBCZAgithub.com/apriliantocecep/ayo-football/services/moderation/pkg/pbb\x06proto3"
 
 var (
 	file_moderation_proto_rawDescOnce sync.Once

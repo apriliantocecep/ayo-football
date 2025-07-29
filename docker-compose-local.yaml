@@ -1,0 +1,43 @@
+services:
+  vault:
+    hostname: vault
+    container_name: vault
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://0.0.0.0:8200"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -dev -dev-listen-address="0.0.0.0:8200" -dev-root-token-id="root"
+
+  vault-init:
+    image: hashicorp/vault:latest
+    container_name: vault-init
+    depends_on:
+      - vault
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: root
+    volumes:
+      - ./init-vault-local.sh:/init-vault.sh:ro
+    entrypoint: ""
+    command: sh /init-vault.sh
+    restart: "no"
+
+  pgsql-server:
+    image: postgres:15
+    container_name: postgres-server
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ayofootball
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

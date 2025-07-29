@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/entity"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

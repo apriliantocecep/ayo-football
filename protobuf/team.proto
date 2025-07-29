@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+option go_package = "github.com/apriliantocecep/ayo-football/services/team/pkg/pb";
+
+service TeamService {
+  rpc CreateTeam(CreateTeamRequest) returns (Team);
+  rpc GetTeam(GetTeamRequest) returns (Team);
+  rpc UpdateTeam(UpdateTeamRequest) returns (Team);
+  rpc DeleteTeam(DeleteTeamRequest) returns (DeleteTeamResponse);
+  rpc ListTeams(ListTeamsRequest) returns (ListTeamsResponse);
+}
+
+message Team {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  int32 founded_at = 4;
+  string address = 5;
+  string city = 6;
+  string created_at = 7;
+  string updated_at = 8;
+}
+
+message CreateTeamRequest {
+  string name = 1;
+  string logo = 2;
+  int32 founded_at = 3;
+  string address = 4;
+  string city = 5;
+}
+
+message GetTeamRequest {
+  string id = 1;
+}
+
+message UpdateTeamRequest {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  int32 founded_at = 4;
+  string address = 5;
+  string city = 6;
+}
+
+message DeleteTeamRequest {
+  string id = 1;
+}
+
+message DeleteTeamResponse {
+  string status = 1;
+}
+
+message ListTeamsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message ListTeamsResponse {
+  repeated Team teams = 1;
+  int32 total = 2;
+}

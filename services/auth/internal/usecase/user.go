@@ -2,35 +2,25 @@ package usecase
 
 import (
 	"context"
-	"errors"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/config"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/gateway/messaging"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/repository"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/config"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/repository"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
-	"log"
 	"strings"
 	"time"
 )
 
 type UserUseCase struct {
-	DB                   *gorm.DB
-	UserRepository       *repository.UserRepository
-	Jwt                  *config.JwtWrapper
-	UserCreatedPublisher *messaging.UserPublisher
+	DB             *gorm.DB
+	UserRepository *repository.UserRepository
+	Jwt            *config.JwtWrapper
 }
 
 func (u *UserUseCase) hashPassword(parentCtx context.Context, ctx context.Context, password string) (string, error) {
-	_, span := otel.Tracer("UserUseCase").Start(parentCtx, "UserUseCase.hashPassword")
-	defer span.End()
-
 	var passwordResultChan = make(chan utils.PasswordResult)
 	go utils.HashPasswordAsync(password, passwordResultChan)
 
@@ -48,15 +38,12 @@ func (u *UserUseCase) hashPassword(parentCtx context.Context, ctx context.Contex
 }
 
 func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
-	startCtx, span := otel.Tracer("UserUseCase").Start(ctx, "UserUseCase.Register")
-	defer span.End()
-
 	userEntity, err := new(entity.User), *new(error)
 
 	hashCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	password, err := u.hashPassword(startCtx, hashCtx, request.Password)
+	password, err := u.hashPassword(ctx, hashCtx, request.Password)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "hashing password error: %v", err)
 	}
@@ -65,7 +52,7 @@ func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterReque
 	tx := u.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
-	userEntity, err = u.UserRepository.FindByEmailOrUsername(startCtx, tx, request.Email, username)
+	userEntity, err = u.UserRepository.FindByEmailOrUsername(ctx, tx, request.Email, username)
 	if err == nil {
 		if userEntity.Email == request.Email {
 			return nil, status.Errorf(codes.AlreadyExists, "email already exists")
@@ -81,15 +68,10 @@ func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterReque
 		Email:    request.Email,
 		Username: username,
 		Password: password,
+		Role:     "admin",
 	}
-	span.SetAttributes(
-		attribute.String("user.name", request.Name),
-		attribute.String("user.email", request.Email),
-		attribute.String("user.username", username),
-		attribute.String("user.password", password),
-	)
 
-	userUuid, err := u.UserRepository.Create(startCtx, tx, &user)
+	userUuid, err := u.UserRepository.Create(ctx, tx, &user)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, "can not create user")
 	}
@@ -100,45 +82,6 @@ func (u *UserUseCase) Register(ctx context.Context, request *model.RegisterReque
 
 	response := model.RegisterResponse{UserId: userUuid.String(), Username: username}
 
-	return &response, nil
-}
-
-func (u *UserUseCase) RegisterWithQueue(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResponse, error) {
-	password, err := utils.HashPassword(ctx, request.Password)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "error hashing password: %v", err)
-	}
-
-	// get username from email
-	username := strings.Split(request.Email, "@")[0]
-
-	existingUser, err := u.UserRepository.FindByEmailOrUsername(ctx, u.DB, request.Email, username)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
-	}
-
-	if existingUser.Email == request.Email {
-		return nil, status.Errorf(codes.AlreadyExists, "email already exists")
-	}
-
-	if existingUser.Username == username {
-		return nil, status.Errorf(codes.AlreadyExists, "username already exists")
-	}
-
-	// publish to broker
-	event := sharedmodel.UserEvent{
-		Name:     request.Name,
-		Email:    request.Email,
-		Username: username,
-		Password: password,
-	}
-	err = u.UserCreatedPublisher.Publish(&event)
-	if err != nil {
-		log.Printf("failed publish user created event : %+v", err)
-		return nil, status.Errorf(codes.Aborted, "failed to publish user data")
-	}
-
-	response := model.RegisterResponse{UserId: "<known after queued>", Username: username}
 	return &response, nil
 }
 
@@ -199,11 +142,10 @@ func (u *UserUseCase) ValidateToken(ctx context.Context, token string) (string, 
 	return claims.RegisteredClaims.Subject, nil
 }
 
-func NewUserUseCase(userRepository *repository.UserRepository, jwt *config.JwtWrapper, db *gorm.DB, userCreatedPublisher *messaging.UserPublisher) *UserUseCase {
+func NewUserUseCase(userRepository *repository.UserRepository, jwt *config.JwtWrapper, db *gorm.DB) *UserUseCase {
 	return &UserUseCase{
-		UserRepository:       userRepository,
-		Jwt:                  jwt,
-		DB:                   db,
-		UserCreatedPublisher: userCreatedPublisher,
+		UserRepository: userRepository,
+		Jwt:            jwt,
+		DB:             db,
 	}
 }

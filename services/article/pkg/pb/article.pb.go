@@ -425,7 +425,7 @@ const file_article_proto_rawDesc = "" +
 	"\x0eArticleService\x12>\n" +
 	"\rSubmitArticle\x12\x15.SubmitArticleRequest\x1a\x16.SubmitArticleResponse\x12A\n" +
 	"\x0ePublishArticle\x12\x16.PublishArticleRequest\x1a\x17.PublishArticleResponse\x128\n" +
-	"\vGetArticles\x12\x13.GetArticlesRequest\x1a\x14.GetArticlesResponseB@Z>github.com/apriliantocecep/posfin-blog/services/article/pkg/pbb\x06proto3"
+	"\vGetArticles\x12\x13.GetArticlesRequest\x1a\x14.GetArticlesResponseBAZ?github.com/apriliantocecep/ayo-football/services/article/pkg/pbb\x06proto3"
 
 var (
 	file_article_proto_rawDescOnce sync.Once

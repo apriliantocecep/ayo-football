@@ -2,9 +2,9 @@ package config
 
 import (
 	"errors"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/entity"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"log"

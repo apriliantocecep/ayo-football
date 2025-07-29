@@ -2,9 +2,9 @@ package config
 
 import (
 	"database/sql"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/entity"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -20,7 +20,7 @@ type Database struct {
 func NewDatabase(vaultClient *shared.VaultClient) *Database {
 	var gormDB *gorm.DB
 
-	secret := utils.GetVaultSecretAuthSvc(vaultClient)
+	secret := utils.GetVaultSecretConfig(vaultClient)
 
 	dsn := secret["DATABASE_URL"]
 	if dsn == nil || dsn == "" {

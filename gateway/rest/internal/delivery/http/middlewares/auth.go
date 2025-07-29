@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/grpc_client"
-	"github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/grpc_client"
+	"github.com/apriliantocecep/ayo-football/services/auth/pkg/pb"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

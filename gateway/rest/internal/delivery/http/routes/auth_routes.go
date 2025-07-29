@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/apriliantocecep/posfin-blog/gateway/rest/internal/delivery/http"
+	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/http"
 	"github.com/gofiber/fiber/v2"
 )
 

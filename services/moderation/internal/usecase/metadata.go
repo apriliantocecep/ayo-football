@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/repository"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/repository"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"

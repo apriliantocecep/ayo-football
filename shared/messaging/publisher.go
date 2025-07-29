@@ -3,7 +3,7 @@ package messaging
 import (
 	"context"
 	"encoding/json"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
+	sharedmodel "github.com/apriliantocecep/ayo-football/shared/model"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"time"

@@ -33,7 +33,7 @@ func NewVaultClient() *VaultClient {
 }
 
 func (v *VaultClient) GetSecret(path string) (map[string]interface{}, error) {
-	secret, err := v.Client.KVv2("posfin").Get(context.Background(), path)
+	secret, err := v.Client.KVv2("ayofootball").Get(context.Background(), path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read secret: %w", err)
 	}

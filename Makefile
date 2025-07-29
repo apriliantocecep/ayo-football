@@ -2,6 +2,12 @@ SERVICE ?= auth
 PROTO_FILE := $(SERVICE).proto
 OUT_DIR := services/$(SERVICE)/pkg/pb
 
+up:
+	docker compose -f docker-compose-local.yaml build --no-cache && docker compose -f docker-compose-local.yaml up -d
+
+down:
+	docker compose down -v
+
 gen:
 	@mkdir -p $(OUT_DIR)
 	@protoc \

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/apriliantocecep/posfin-blog/services/article/pkg/pb";
+option go_package = "github.com/apriliantocecep/ayo-football/services/article/pkg/pb";
 
 service ArticleService {
   rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);

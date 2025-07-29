@@ -12,6 +12,7 @@ type User struct {
 	Username  string    `json:"username" gorm:"not null,uniqueIndex"`
 	Password  string    `json:"-"`
 	Avatar    string    `json:"avatar,omitempty"`
+	Role      string    `json:"role,omitempty"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoCreateTime"`
 }

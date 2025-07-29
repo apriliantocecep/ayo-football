@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/entity"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/codes"
@@ -15,9 +15,6 @@ type UserRepository struct {
 }
 
 func (u *UserRepository) Create(ctx context.Context, db *gorm.DB, user *entity.User) (uuid.UUID, error) {
-	_, span := otel.Tracer("UserRepository").Start(ctx, "UserRepository.Create")
-	defer span.End()
-
 	result := db.Create(&user)
 	return user.ID, result.Error
 }
@@ -62,9 +59,6 @@ func (u *UserRepository) FindByUsername(ctx context.Context, db *gorm.DB, userna
 }
 
 func (u *UserRepository) FindByEmailOrUsername(ctx context.Context, db *gorm.DB, email, username string) (*entity.User, error) {
-	_, span := otel.Tracer("UserRepository").Start(ctx, "UserRepository.FindByEmailOrUsername")
-	defer span.End()
-
 	user := new(entity.User)
 
 	if err := db.Where(&entity.User{Username: username}).First(user).Error; err != nil {

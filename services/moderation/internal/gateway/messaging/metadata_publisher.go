@@ -1,8 +1,8 @@
 package messaging
 
 import (
-	sharedmessaging "github.com/apriliantocecep/posfin-blog/shared/messaging"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
+	sharedmessaging "github.com/apriliantocecep/ayo-football/shared/messaging"
+	sharedmodel "github.com/apriliantocecep/ayo-football/shared/model"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

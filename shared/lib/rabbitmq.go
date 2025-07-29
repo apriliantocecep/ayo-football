@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 )

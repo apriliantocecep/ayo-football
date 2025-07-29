@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/gateway/messaging"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/repository"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/gateway/messaging"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/repository"
+	sharedmodel "github.com/apriliantocecep/ayo-football/shared/model"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"

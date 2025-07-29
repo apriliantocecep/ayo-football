@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/entity"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"google.golang.org/grpc/codes"

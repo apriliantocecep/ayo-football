@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/apriliantocecep/posfin-blog/services/auth/pkg/pb";
+option go_package = "github.com/apriliantocecep/ayo-football/services/auth/pkg/pb";
 
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);

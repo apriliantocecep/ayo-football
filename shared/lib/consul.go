@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"github.com/apriliantocecep/posfin-blog/shared"
-	"github.com/apriliantocecep/posfin-blog/shared/utils"
+	"github.com/apriliantocecep/ayo-football/shared"
+	"github.com/apriliantocecep/ayo-football/shared/utils"
 	capi "github.com/hashicorp/consul/api"
 	"log"
 	"time"

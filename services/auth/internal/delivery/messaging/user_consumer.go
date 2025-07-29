@@ -3,9 +3,9 @@ package messaging
 import (
 	"context"
 	"encoding/json"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/auth/internal/usecase"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/auth/internal/usecase"
+	sharedmodel "github.com/apriliantocecep/ayo-football/shared/model"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 )

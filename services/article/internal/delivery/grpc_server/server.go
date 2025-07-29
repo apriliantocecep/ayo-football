@@ -2,9 +2,9 @@ package grpc_server
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/usecase"
-	"github.com/apriliantocecep/posfin-blog/services/article/pkg/pb"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/usecase"
+	"github.com/apriliantocecep/ayo-football/services/article/pkg/pb"
 )
 
 type ArticleServer struct {

@@ -604,7 +604,7 @@ const file_auth_proto_rawDesc = "" +
 	"\bRegister\x12\x10.RegisterRequest\x1a\x11.RegisterResponse\x12J\n" +
 	"\x11RegisterWithQueue\x12\x19.RegisterWithQueueRequest\x1a\x1a.RegisterWithQueueResponse\x12>\n" +
 	"\rValidateToken\x12\x15.ValidateTokenRequest\x1a\x16.ValidateTokenResponse\x12)\n" +
-	"\vGetUserById\x12\x13.GetUserByIdRequest\x1a\x05.UserB=Z;github.com/apriliantocecep/posfin-blog/services/auth/pkg/pbb\x06proto3"
+	"\vGetUserById\x12\x13.GetUserByIdRequest\x1a\x05.UserB>Z<github.com/apriliantocecep/ayo-football/services/auth/pkg/pbb\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once

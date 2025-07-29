@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/entity"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/gateway/messaging"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/model"
-	"github.com/apriliantocecep/posfin-blog/services/article/internal/repository"
-	sharedmodel "github.com/apriliantocecep/posfin-blog/shared/model"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/entity"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/gateway/messaging"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/model"
+	"github.com/apriliantocecep/ayo-football/services/article/internal/repository"
+	sharedmodel "github.com/apriliantocecep/ayo-football/shared/model"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

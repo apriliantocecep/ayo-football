@@ -2,8 +2,8 @@ package grpc_server
 
 import (
 	"context"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/internal/usecase"
-	"github.com/apriliantocecep/posfin-blog/services/moderation/pkg/pb"
+	"github.com/apriliantocecep/ayo-football/services/moderation/internal/usecase"
+	"github.com/apriliantocecep/ayo-football/services/moderation/pkg/pb"
 )
 
 type ModerationServer struct {

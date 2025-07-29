@@ -20,6 +20,8 @@ func ValidationErrorMessage(fe validator.FieldError) string {
 		return fe.Field() + " must be at least " + fe.Param() + " characters"
 	case "max":
 		return fe.Field() + " must be at most " + fe.Param() + " characters"
+	case "url":
+		return fe.Field() + " must be a valid URL"
 	default:
 		return fe.Field() + " is not valid"
 	}
