@@ -107,6 +107,14 @@ func (uc *TeamUseCase) DeleteTeam(ctx context.Context, id string) error {
 	tx := uc.DB.WithContext(ctx).Begin()
 	defer tx.Rollback()
 
+	_, err = uc.TeamRepository.GetByID(ctx, uc.DB, teamID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return status.Errorf(codes.NotFound, "team not found")
+		}
+		return err
+	}
+
 	err = uc.TeamRepository.Delete(ctx, tx, teamID)
 	if err != nil {
 		return status.Errorf(codes.Aborted, "can not delete team: %v", err)

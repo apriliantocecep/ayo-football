@@ -16,9 +16,8 @@ vault kv put ayofootball/config \
   AUTH_SERVICE_PORT="8001" \
   AUTH_SERVICE_URL="localhost" \
   GATEWAY_PORT="8000" \
-  MODERATION_SERVICE_PORT="8003" \
-  MODERATION_SERVICE_URL="moderation-srv" \
-  MODERATION_SERVICE_PROXY="moderation-service-cluster.local" \
+  PLAYER_SERVICE_PORT="8003" \
+  PLAYER_SERVICE_URL="localhost" \
   RABBITMQ_URL="amqp://guest:guest@rabbitmq-server:5672/" \
   CONSUL_URL="consul-server:8500" \
   TRAEFIK_GRPC_PROXY_URL="traefik-server:9000" \

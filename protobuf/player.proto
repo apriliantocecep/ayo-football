@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/apriliantocecep/ayo-football/services/player/pkg/pb";
+
+service PlayerService {
+  rpc CreatePlayer(CreatePlayerRequest) returns (Player);
+  rpc GetPlayer(GetPlayerRequest) returns (Player);
+  rpc UpdatePlayer(UpdatePlayerRequest) returns (Player);
+  rpc DeletePlayer(DeletePlayerRequest) returns (google.protobuf.Empty);
+  rpc ListPlayersByTeam(ListPlayersByTeamRequest) returns (ListPlayersResponse);
+}
+
+enum Position {
+  UNKNOWN = 0;
+  PENYERANG = 1;
+  GELANDANG = 2;
+  BERTAHAN = 3;
+  PENJAGA_GAWANG = 4;
+}
+
+message Player {
+  string id = 1;
+  string team_id = 2;
+  string name = 3;
+  float height = 4;
+  float weight = 5;
+  Position position = 6;
+  int32 back_number = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message CreatePlayerRequest {
+  string team_id = 1;
+  string name = 2;
+  float height = 3;
+  float weight = 4;
+  Position position = 5;
+  int32 back_number = 6;
+}
+
+message UpdatePlayerRequest {
+  string id = 1;
+  string name = 2;
+  float height = 3;
+  float weight = 4;
+  Position position = 5;
+  int32 back_number = 6;
+  string team_id = 7;
+}
+
+message GetPlayerRequest {
+  string id = 1;
+}
+
+message DeletePlayerRequest {
+  string id = 1;
+}
+
+message ListPlayersByTeamRequest {
+  string team_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListPlayersResponse {
+  repeated Player players = 1;
+}

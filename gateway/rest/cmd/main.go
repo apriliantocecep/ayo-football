@@ -7,6 +7,7 @@ import (
 	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/http"
 	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/http/middlewares"
 	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/delivery/http/routes"
+	"github.com/apriliantocecep/ayo-football/gateway/rest/internal/model"
 	"github.com/apriliantocecep/ayo-football/shared"
 	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"github.com/go-playground/validator/v10"
@@ -43,6 +44,7 @@ func main() {
 			log.Fatalf("closing connection to auth service error: %v", err)
 		}
 	}(authServiceClient.Conn)
+
 	teamServiceClient := grpc_client.NewTeamServiceClient(vaultClient)
 	defer func(Conn *grpc.ClientConn) {
 		err := Conn.Close()
@@ -51,12 +53,25 @@ func main() {
 		}
 	}(teamServiceClient.Conn)
 
+	playerServiceClient := grpc_client.NewPlayerServiceClient(vaultClient)
+	defer func(Conn *grpc.ClientConn) {
+		err := Conn.Close()
+		if err != nil {
+			log.Fatalf("closing connection to player service error: %v", err)
+		}
+	}(playerServiceClient.Conn)
+
 	// validator instance
 	newValidator := validator.New()
+	err := newValidator.RegisterValidation("position_enum", model.PositionEnumValidation)
+	if err != nil {
+		log.Fatalf("error registering validator 'position_enum': %v", err)
+	}
 
 	// http handlers
 	authHandler := http.NewAuthHandler(authServiceClient, newValidator)
 	teamHandler := http.NewTeamHandler(newValidator, teamServiceClient)
+	playerHandler := http.NewPlayerHandler(newValidator, playerServiceClient, teamServiceClient)
 
 	// middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authServiceClient)
@@ -66,6 +81,8 @@ func main() {
 	authRoutes.Setup()
 	teamRoutes := routes.NewTeamRoutes(app, teamHandler, authMiddleware)
 	teamRoutes.Setup()
+	playerRoutes := routes.NewPlayerRoutes(app, playerHandler, authMiddleware)
+	playerRoutes.Setup()
 
 	// listener
 	secret := utils.GetVaultSecretConfig(vaultClient)
@@ -75,7 +92,7 @@ func main() {
 	}
 	port := utils.ParsePort(portStr.(string))
 
-	err := app.Listen(fmt.Sprintf(":%d", port))
+	err = app.Listen(fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Panicf("failed to start gateway server: %+v\n", err)
 	}

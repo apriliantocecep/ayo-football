@@ -22,6 +22,8 @@ func ValidationErrorMessage(fe validator.FieldError) string {
 		return fe.Field() + " must be at most " + fe.Param() + " characters"
 	case "url":
 		return fe.Field() + " must be a valid URL"
+	case "position_enum":
+		return fe.Field() + " must be a valid position enum: PENYERANG, GELANDANG, BERTAHAN or PENJAGA_GAWANG"
 	default:
 		return fe.Field() + " is not valid"
 	}
