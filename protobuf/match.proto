@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/apriliantocecep/ayo-football/services/match/pkg/pb";
+
+service MatchService {
+  rpc CreateMatch(CreateMatchRequest) returns (Match);
+  rpc GetMatch(GetMatchRequest) returns (Match);
+  rpc UpdateMatch(UpdateMatchRequest) returns (Match);
+  rpc DeleteMatch(DeleteMatchRequest) returns (google.protobuf.Empty);
+  rpc ListMatch(ListMatchRequest) returns (ListMatchResponse);
+
+  rpc CreateGoal(CreateGoalRequest) returns (Goal);
+  rpc DeleteGoal(DeleteGoalRequest) returns (google.protobuf.Empty);
+}
+
+message Match {
+  string id = 1;
+  string date = 2;
+  string venue = 3;
+  string home_team_id = 4;
+  string away_team_id = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message Goal {
+  string id = 1;
+  string match_id = 2;
+  string player_id = 3;
+  string scored_at = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message CreateMatchRequest {
+  string date = 1;
+  string venue = 2;
+  string home_team_id = 3;
+  string away_team_id = 4;
+}
+
+message UpdateMatchRequest {
+  string id = 1;
+  string date = 2;
+  string venue = 3;
+  string home_team_id = 4;
+  string away_team_id = 5;
+}
+
+message DeleteMatchRequest {
+  string id = 1;
+}
+
+message GetMatchRequest {
+  string id = 1;
+}
+
+message ListMatchRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message ListMatchResponse {
+  repeated Match matches = 1;
+}
+
+// Goal --------
+
+message CreateGoalRequest {
+  string match_id = 1;
+  string player_id = 2;
+  string scored_at = 3;
+}
+
+message DeleteGoalRequest {
+  string goal_id = 1;
+}

@@ -2,7 +2,7 @@ package grpc_client
 
 import (
 	"fmt"
-	"github.com/apriliantocecep/ayo-football/services/player/pkg/pb"
+	"github.com/apriliantocecep/ayo-football/services/match/pkg/pb"
 	"github.com/apriliantocecep/ayo-football/shared"
 	"github.com/apriliantocecep/ayo-football/shared/utils"
 	"google.golang.org/grpc"
@@ -10,31 +10,31 @@ import (
 	"log"
 )
 
-type PlayerServiceClient struct {
-	Client pb.PlayerServiceClient
+type MatchServiceClient struct {
+	Client pb.MatchServiceClient
 	Conn   *grpc.ClientConn
 }
 
-func NewPlayerServiceClient(vaultClient *shared.VaultClient) *PlayerServiceClient {
+func NewMatchServiceClient(vaultClient *shared.VaultClient) *MatchServiceClient {
 	secret := utils.GetVaultSecretConfig(vaultClient)
 
-	port := secret["PLAYER_SERVICE_PORT"]
+	port := secret["MATCH_SERVICE_PORT"]
 	if port == nil || port == "" {
-		log.Fatalln("PLAYER_SERVICE_PORT is not set")
+		log.Fatalln("MATCH_SERVICE_PORT is not set")
 	}
-	url := secret["PLAYER_SERVICE_URL"]
+	url := secret["MATCH_SERVICE_URL"]
 	if url == nil || url == "" {
-		log.Fatalln("PLAYER_SERVICE_URL is not set")
+		log.Fatalln("MATCH_SERVICE_URL is not set")
 	}
 
 	target := fmt.Sprintf("%s:%s", url.(string), port.(string))
 	conn, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("did not connect to player service: %v", err)
+		log.Fatalf("did not connect to match service: %v", err)
 	}
 
-	client := pb.NewPlayerServiceClient(conn)
-	return &PlayerServiceClient{
+	client := pb.NewMatchServiceClient(conn)
+	return &MatchServiceClient{
 		Client: client,
 		Conn:   conn,
 	}

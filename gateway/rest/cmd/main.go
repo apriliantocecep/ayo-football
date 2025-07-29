@@ -61,6 +61,14 @@ func main() {
 		}
 	}(playerServiceClient.Conn)
 
+	matchServiceClient := grpc_client.NewMatchServiceClient(vaultClient)
+	defer func(Conn *grpc.ClientConn) {
+		err := Conn.Close()
+		if err != nil {
+			log.Fatalf("closing connection to match service error: %v", err)
+		}
+	}(matchServiceClient.Conn)
+
 	// validator instance
 	newValidator := validator.New()
 	err := newValidator.RegisterValidation("position_enum", model.PositionEnumValidation)
@@ -72,6 +80,7 @@ func main() {
 	authHandler := http.NewAuthHandler(authServiceClient, newValidator)
 	teamHandler := http.NewTeamHandler(newValidator, teamServiceClient)
 	playerHandler := http.NewPlayerHandler(newValidator, playerServiceClient, teamServiceClient)
+	matchHandler := http.NewMatchHandler(newValidator, matchServiceClient)
 
 	// middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authServiceClient)
@@ -83,6 +92,8 @@ func main() {
 	teamRoutes.Setup()
 	playerRoutes := routes.NewPlayerRoutes(app, playerHandler, authMiddleware)
 	playerRoutes.Setup()
+	matchRoutes := routes.NewMatchRoutes(app, matchHandler, authMiddleware)
+	matchRoutes.Setup()
 
 	// listener
 	secret := utils.GetVaultSecretConfig(vaultClient)

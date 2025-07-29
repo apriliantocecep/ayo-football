@@ -24,6 +24,8 @@ func ValidationErrorMessage(fe validator.FieldError) string {
 		return fe.Field() + " must be a valid URL"
 	case "position_enum":
 		return fe.Field() + " must be a valid position enum: PENYERANG, GELANDANG, BERTAHAN or PENJAGA_GAWANG"
+	case "datetime":
+		return fe.Field() + " must be a valid datetime. Example: 2006-01-02 15:04:05"
 	default:
 		return fe.Field() + " is not valid"
 	}
