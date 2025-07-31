@@ -9,10 +9,10 @@ RUN go mod download
 
 # Copy the source code
 COPY shared ./shared
-COPY services/moderation ./services/moderation
+COPY services/match ./services/match
 
 # Build the Go binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o moderation-service ./services/moderation/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o match-service ./services/match/cmd/main.go
 
 # ---------- Stage 2: Run ----------
 FROM gcr.io/distroless/static-debian12
@@ -20,9 +20,9 @@ FROM gcr.io/distroless/static-debian12
 WORKDIR /
 
 # Copy binary from builder
-COPY --from=builder /app/moderation-service /moderation-service
+COPY --from=builder /app/match-service /match-service
 
 EXPOSE 8003
 
 # Run binary
-ENTRYPOINT ["/moderation-service"]
+ENTRYPOINT ["/match-service"]

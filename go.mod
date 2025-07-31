@@ -1,8 +1,6 @@
 module github.com/apriliantocecep/ayo-football
 
-go 1.24.3
-
-toolchain go1.24.5
+go 1.24.2
 
 require (
 	github.com/go-playground/validator/v10 v10.27.0

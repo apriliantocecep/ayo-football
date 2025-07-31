@@ -26,44 +26,17 @@ services:
     command: sh /init-vault.sh
     restart: "no"
 
-  rabbitmq-server:
-    image: rabbitmq:4-management
-    container_name: rabbitmq-server
-    ports:
-      - "5672:5672"      # AMQP
-      - "15672:15672"    # UI
-    environment:
-#      RABBITMQ_DEFAULT_USER: admin
-#      RABBITMQ_DEFAULT_PASS: secret123
-      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbitmq_management load_definitions "/etc/rabbitmq/definitions.json"
-    volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-      - ./rabbitmq-definitions.json:/etc/rabbitmq/definitions.json:ro
-    restart: unless-stopped
-
   pgsql-server:
     image: postgres:15
     container_name: postgres-server
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: posfin
+      POSTGRES_DB: ayofootball
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  mongodb-server:
-    image: mongo:6.0
-    container_name: mongodb-server
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    volumes:
-      - mongo-data:/data/db
     restart: unless-stopped
 
   auth-srv:
@@ -80,95 +53,53 @@ services:
       - vault
       - vault-init
       - pgsql-server
-      - rabbitmq-server
     restart: unless-stopped
 
-  auth-worker:
+  team-srv:
     build:
       context: .
-      dockerfile: auth-worker.dockerfile
-    container_name: auth-worker
-    environment:
-      - VAULT_ADDR=${VAULT_ADDR}
-      - VAULT_TOKEN=${VAULT_TOKEN}
-      #- WORKER_NAME=auth-worker # Optional
-      - SERVICE_URL=auth-worker # Optional
-    depends_on:
-      - vault
-      - vault-init
-      - auth-srv
-      - pgsql-server
-      - rabbitmq-server
-    restart: unless-stopped
-
-  article-srv:
-    build:
-      context: .
-      dockerfile: article-service.dockerfile
-    container_name: article-srv
+      dockerfile: team-service.dockerfile
+    container_name: team-srv
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
       - VAULT_TOKEN=${VAULT_TOKEN}
       - PORT=6001
-      - SERVICE_URL=article-srv
+      - SERVICE_URL=team-srv
     depends_on:
       - vault
       - vault-init
-      - mongodb-server
-      - rabbitmq-server
     restart: unless-stopped
 
-  article-worker:
+  player-srv:
     build:
       context: .
-      dockerfile: article-worker.dockerfile
-    container_name: article-worker
-    environment:
-      - VAULT_ADDR=${VAULT_ADDR}
-      - VAULT_TOKEN=${VAULT_TOKEN}
-      #- WORKER_NAME=article-worker # Optional
-      - SERVICE_URL=article-worker # Optional
-    depends_on:
-      - vault
-      - vault-init
-      - article-srv
-      - mongodb-server
-      - rabbitmq-server
-    restart: unless-stopped
-
-  moderation-srv:
-    build:
-      context: .
-      dockerfile: moderation-service.dockerfile
-    container_name: moderation-srv
+      dockerfile: player-service.dockerfile
+    container_name: player-srv
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
       - VAULT_TOKEN=${VAULT_TOKEN}
       - PORT=7001
-      - SERVICE_URL=moderation-srv
+      - SERVICE_URL=player-srv
     depends_on:
       - vault
       - vault-init
       - pgsql-server
-      - rabbitmq-server
     restart: unless-stopped
 
-  moderation-worker:
+  match-srv:
     build:
       context: .
-      dockerfile: moderation-worker.dockerfile
-    container_name: moderation-worker
+      dockerfile: match-service.dockerfile
+    container_name: match-srv
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
       - VAULT_TOKEN=${VAULT_TOKEN}
-      #- WORKER_NAME=moderation-worker # Optional
-      - SERVICE_URL=moderation-worker # Optional
+      - PORT=7005
+      - SERVICE_URL=match-srv
     depends_on:
       - vault
       - vault-init
-      - moderation-srv
       - pgsql-server
-      - rabbitmq-server
     restart: unless-stopped
 
   gateway-srv:
@@ -186,92 +117,10 @@ services:
       - "8000:8000"
     depends_on:
       - auth-srv
-      - article-srv
-      - article-worker
-      - moderation-srv
-      - moderation-worker
+      - team-srv
+      - player-srv
+      - match-srv
     restart: unless-stopped
 
-  traefik-server:
-    image: traefik:v3.4.4
-    container_name: traefik-server
-    ports:
-      - "8081:8081" # web
-      - "8443:8443" # websecure
-      - "9000:9000" # grpc
-      - "8080:8080"  # dashboard Traefik
-    volumes:
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/acme.json:/acme.json
-    command:
-      - --configFile=/etc/traefik/traefik.yml
-    depends_on:
-      - consul-server
-
-  consul-server:
-    image: hashicorp/consul:latest
-    container_name: consul-server
-    ports:
-      - "8500:8500"  # UI consul
-    volumes:
-      - ./consul/data:/consul/data
-      - ./consul/config:/consul/config
-    command: "agent -dev -config-file=/consul/config/dev.hcl"
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      #- GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
-      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./observability/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-
-  tempo:
-    image: grafana/tempo:latest
-    container_name: tempo
-    command: [ "-config.file=/etc/tempo.yaml" ]
-    ports:
-      - "3200:3200" # tempo
-    volumes:
-      - ./observability/tempo.yaml:/etc/tempo.yaml
-      - tempo-data:/var/tempo
-
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:latest
-    container_name: otel-collector
-    command: [ "--config=/etc/otel-collector-config.yaml" ]
-    ports:
-      - "13133:13133" # Health check extension
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-    volumes:
-      - ./observability/otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    depends_on:
-      - tempo
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    command:
-      - --config.file=/etc/prometheus.yaml
-      - --web.enable-remote-write-receiver
-      - --enable-feature=exemplar-storage
-      - --enable-feature=native-histograms
-    volumes:
-      - ./observability/prometheus.yaml:/etc/prometheus.yaml
-    ports:
-      - "9090:9090"
-
 volumes:
-  rabbitmq-data:
   postgres-data:
-  mongo-data:
-  grafana-data:
-  tempo-data:

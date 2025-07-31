@@ -1,6 +1,6 @@
-# Setup Guide - Content Publisher Microservice
+# Setup Guide - Ayo Football Microservice
 
-Dokumen ini menjelaskan cara menjalankan sistem backend Content Publisher berbasis microservices secara lokal menggunakan Docker Compose.
+Dokumen ini menjelaskan cara menjalankan sistem backend Football berbasis microservices secara lokal menggunakan Docker Compose.
 
 ---
 
@@ -50,8 +50,8 @@ docker compose down -v
 
 # Step 4 - REST API Documentation
 
-| Item                     | Keterangan                                                                                                           |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| **Postman Collection**   | Import file: [`Posfin Blog REST API.postman_collection.json`](../Posfin%20Blog%20REST%20API.postman_collection.json) |
-| **Default API Base URL** | `http://localhost:8000`                                                                                              |
-| **Postman Environment**  | - `url`: `http://localhost:8000`<br>- `token`: *auto-generate saat hit endpoint `/login`*                            |
+| Item                     | Keterangan                                                                                |
+| ------------------------ |-------------------------------------------------------------------------------------------|
+| **Postman Collection**   | Import file: [`Ayo Football REST API.postman_collection.json`](../Ayo Football REST API.postman_collection.json)                    |
+| **Default API Base URL** | `http://localhost:8000`                                                                   |
+| **Postman Environment**  | - `url`: `http://localhost:8000`<br>- `token`: *auto-generate saat hit endpoint `/login`* |

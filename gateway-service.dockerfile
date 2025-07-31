@@ -17,6 +17,9 @@ RUN go mod download
 # Copy the source code
 COPY shared ./shared
 COPY services/auth/pkg/pb ./services/auth/pkg/pb
+COPY services/team/pkg/pb ./services/team/pkg/pb
+COPY services/player/pkg/pb ./services/player/pkg/pb
+COPY services/match/pkg/pb ./services/match/pkg/pb
 COPY services/article/pkg/pb ./services/article/pkg/pb
 COPY gateway/rest ./gateway/rest
 

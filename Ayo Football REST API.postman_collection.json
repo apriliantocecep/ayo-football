@@ -1,0 +1,1435 @@
+{
+	"info": {
+		"_postman_id": "f2fadf78-b23f-4b09-b12d-2d7770914729",
+		"name": "Ayo Football REST API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2801839"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"const token = jsonData.access_token;",
+									"pm.collectionVariables.set(\"token\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"dfads\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:41:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "41"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": \"invalid identity or password\"\n}"
+						},
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"identity\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "402"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNlY2VwYXByaWxpYW50b0BnbWFpbC5jb20iLCJpc3MiOiJwb3NmaW4iLCJzdWIiOiI1NTAzNGM4NC1mOGE3LTQ0YzctYTEwMy05ZmU5NGI2ZTNlMDUiLCJleHAiOjE3NTI4NjA1OTUsIm5iZiI6MTc1Mjc3NDE5NSwiaWF0IjoxNzUyNzc0MTk1LCJqdGkiOiI5OGNmNDRjMC1mMmRlLTQ4YmYtODQ4NS0xZWYzODg0MWU2ODkifQ.JvxsiDD9V7gow7SDoEXHeGHNJZ44Ux5daNXeFj0FAkc\",\n    \"expire_at\": \"2025-07-19 00:43:15 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cecep Aprilianto\",\n    \"email\": \"cecepaprilianto@gmail.com\",\n    \"password\": \"cecep\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Endah\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:39:02 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "74"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": \"d53bdccb-a2d0-4986-9a8d-5e85f5177560\",\n    \"username\": \"endahnhida\"\n}"
+						},
+						{
+							"name": "409",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Endah\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:37 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "33"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": \"email already exists\"\n}"
+						},
+						{
+							"name": "400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\",\n    \"email\": \"endahnhida@gmail.com\",\n    \"password\": \"cecep\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 17:43:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": {\n        \"Name\": \"Name is required\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "teams",
+			"item": [
+				{
+					"name": "get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/teams?page=1&page_size=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teams"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/teams?page=1&page_size=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"teams"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 01:48:51 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "710"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"teams\": [\n        {\n            \"id\": \"2a6c4ef6-5ff5-44d5-8308-4e9bbc564886\",\n            \"name\": \"Persebaya\",\n            \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/a/a1/Persebaya_logo.svg/1200px-Persebaya_logo.svg.png\",\n            \"founded_at\": 1933,\n            \"address\": \"Jl. surabaya\",\n            \"city\": \"Surabaya\",\n            \"created_at\": \"2025-07-29 08:47:03.079734 +0700 WIB\",\n            \"updated_at\": \"2025-07-29 08:47:03.079734 +0700 WIB\"\n        },\n        {\n            \"id\": \"394b85b2-74f5-4609-ba44-bfe0a70f261d\",\n            \"name\": \"Persib 1933\",\n            \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n            \"founded_at\": 1933,\n            \"address\": \"Jl. sulanjana\",\n            \"city\": \"Bandung\",\n            \"created_at\": \"2025-07-29 08:39:14.565276 +0700 WIB\",\n            \"updated_at\": \"2025-07-29 08:41:35.927083 +0700 WIB\"\n        }\n    ],\n    \"total\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Persib\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/teams",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Persib\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/teams",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"teams"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 01:39:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "342"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"394b85b2-74f5-4609-ba44-bfe0a70f261d\",\n    \"name\": \"Persib\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\",\n    \"created_at\": \"2025-07-29 08:39:14.565276 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 08:39:14.565276 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Persib 1933\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/teams/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teams",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Persib 1933\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/teams/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"teams",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 01:41:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "347"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"394b85b2-74f5-4609-ba44-bfe0a70f261d\",\n    \"name\": \"Persib 1933\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\",\n    \"created_at\": \"2025-07-29 08:39:14.565276 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 08:41:35.927083 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/teams/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teams",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/teams/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"teams",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 01:49:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "347"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"394b85b2-74f5-4609-ba44-bfe0a70f261d\",\n    \"name\": \"Persib 1933\",\n    \"logo\": \"https://upload.wikimedia.org/wikipedia/id/thumb/0/0d/Logo_Persib_Bandung.png/250px-Logo_Persib_Bandung.png\",\n    \"founded_at\": 1933,\n    \"address\": \"Jl. sulanjana\",\n    \"city\": \"Bandung\",\n    \"created_at\": \"2025-07-29 08:39:14.565276 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 08:41:35.927083 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/teams/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"teams",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/teams/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"teams",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "394b85b2-74f5-4609-ba44-bfe0a70f261d"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 01:50:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "20"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "players",
+			"item": [
+				{
+					"name": "get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/players/?page=1&page_size=10&team_id=cb527e3b-d1b0-4c0f-8e0d-ce5849846cf6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"players",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "team_id",
+									"value": "cb527e3b-d1b0-4c0f-8e0d-ce5849846cf6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"team_id\": \"ffe33772-ff55-4a75-8e0a-74b7016c359f\",\n    \"name\": \"Ari\",\n    \"height\": 160,\n    \"weight\": 70,\n    \"position\": \"PENJAGA_GAWANG\",\n    \"back_number\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/players",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"team_id\": \"cb527e3b-d1b0-4c0f-8e0d-ce5849846cf6\",\n    \"name\": \"Ari Ana\",\n    \"height\": 160,\n    \"weight\": 70,\n    \"position\": \"PENYERANG\",\n    \"back_number\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/players/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"players",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a6a50242-e3f6-4894-978b-06551b373117"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"team_id\": \"cb527e3b-d1b0-4c0f-8e0d-ce5849846cf6\",\n    \"name\": \"Ari Ana\",\n    \"height\": 160,\n    \"weight\": 70,\n    \"position\": \"PENYERANG\",\n    \"back_number\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/players/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"players",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a6a50242-e3f6-4894-978b-06551b373117"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/players/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"players",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a6a50242-e3f6-4894-978b-06551b373117"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "match",
+			"item": [
+				{
+					"name": "goals",
+					"item": [
+						{
+							"name": "create goal",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/matches/:id/goals",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches",
+										":id",
+										"goals"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3f8287f8-210d-4a8c-9f1d-c48b1681f76f"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/matches?page=1&page_size=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"matches"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/matches?page=1&page_size=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 15:50:44 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "346"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"matches\": [\n        {\n            \"id\": \"e6815d1a-309d-4e37-8dd3-b22f278caffa\",\n            \"date\": \"2025-07-29 17:00:00 +0700 WIB\",\n            \"venue\": \"Si jalak harupat, Bandung\",\n            \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n            \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\",\n            \"created_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\",\n            \"updated_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2025-07-29 10:00:00\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"5a00f986-07ba-46ea-a204-c718f439f7f3\",\n    \"away_team_id\": \"ffe33772-ff55-4a75-8e0a-74b7016c359f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/matches",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"matches"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2025-07-29 10:00:00\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/matches",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 15:50:12 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "332"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"e6815d1a-309d-4e37-8dd3-b22f278caffa\",\n    \"date\": \"2025-07-29 10:00:00 +0000 UTC\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\",\n    \"created_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2025-07-29 11:00:00\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/matches/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"matches",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "e6815d1a-309d-4e37-8dd3-b22f278caffa"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2025-07-29 11:00:00\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/matches/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "e6815d1a-309d-4e37-8dd3-b22f278caffa"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 15:52:50 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "332"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"e6815d1a-309d-4e37-8dd3-b22f278caffa\",\n    \"date\": \"2025-07-29 11:00:00 +0000 UTC\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\",\n    \"created_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 22:52:50.702846 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/matches/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"matches",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3f8287f8-210d-4a8c-9f1d-c48b1681f76f"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/matches/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "e6815d1a-309d-4e37-8dd3-b22f278caffa"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 15:53:28 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "332"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"e6815d1a-309d-4e37-8dd3-b22f278caffa\",\n    \"date\": \"2025-07-29 18:00:00 +0700 WIB\",\n    \"venue\": \"Si jalak harupat, Bandung\",\n    \"home_team_id\": \"9a67231e-8803-4a8d-ad5f-59056a6b241a\",\n    \"away_team_id\": \"87475fad-4da4-45c4-b4a7-15ab26042fd7\",\n    \"created_at\": \"2025-07-29 22:50:12.571421 +0700 WIB\",\n    \"updated_at\": \"2025-07-29 22:52:50.702846 +0700 WIB\"\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/matches/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"matches",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3f8287f8-210d-4a8c-9f1d-c48b1681f76f"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/matches/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"matches",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "e6815d1a-309d-4e37-8dd3-b22f278caffa"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 29 Jul 2025 15:53:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "20"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"deleted\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
