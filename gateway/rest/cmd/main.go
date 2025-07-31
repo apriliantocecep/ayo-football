@@ -80,7 +80,7 @@ func main() {
 	authHandler := http.NewAuthHandler(authServiceClient, newValidator)
 	teamHandler := http.NewTeamHandler(newValidator, teamServiceClient)
 	playerHandler := http.NewPlayerHandler(newValidator, playerServiceClient, teamServiceClient)
-	matchHandler := http.NewMatchHandler(newValidator, matchServiceClient)
+	matchHandler := http.NewMatchHandler(newValidator, matchServiceClient, playerServiceClient, teamServiceClient)
 
 	// middlewares
 	authMiddleware := middlewares.NewAuthMiddleware(authServiceClient)

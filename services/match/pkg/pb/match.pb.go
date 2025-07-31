@@ -586,16 +586,128 @@ func (x *CreateGoalRequest) GetScoredAt() string {
 	return ""
 }
 
+type UpdateGoalRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	MatchId       string                 `protobuf:"bytes,2,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
+	PlayerId      string                 `protobuf:"bytes,3,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	ScoredAt      string                 `protobuf:"bytes,4,opt,name=scored_at,json=scoredAt,proto3" json:"scored_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateGoalRequest) Reset() {
+	*x = UpdateGoalRequest{}
+	mi := &file_match_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateGoalRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateGoalRequest) ProtoMessage() {}
+
+func (x *UpdateGoalRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_match_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateGoalRequest.ProtoReflect.Descriptor instead.
+func (*UpdateGoalRequest) Descriptor() ([]byte, []int) {
+	return file_match_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateGoalRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateGoalRequest) GetMatchId() string {
+	if x != nil {
+		return x.MatchId
+	}
+	return ""
+}
+
+func (x *UpdateGoalRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+func (x *UpdateGoalRequest) GetScoredAt() string {
+	if x != nil {
+		return x.ScoredAt
+	}
+	return ""
+}
+
+type GetGoalRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGoalRequest) Reset() {
+	*x = GetGoalRequest{}
+	mi := &file_match_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGoalRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGoalRequest) ProtoMessage() {}
+
+func (x *GetGoalRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_match_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGoalRequest.ProtoReflect.Descriptor instead.
+func (*GetGoalRequest) Descriptor() ([]byte, []int) {
+	return file_match_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetGoalRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type DeleteGoalRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	GoalId        string                 `protobuf:"bytes,1,opt,name=goal_id,json=goalId,proto3" json:"goal_id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DeleteGoalRequest) Reset() {
 	*x = DeleteGoalRequest{}
-	mi := &file_match_proto_msgTypes[9]
+	mi := &file_match_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -607,7 +719,7 @@ func (x *DeleteGoalRequest) String() string {
 func (*DeleteGoalRequest) ProtoMessage() {}
 
 func (x *DeleteGoalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_match_proto_msgTypes[9]
+	mi := &file_match_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -620,12 +732,12 @@ func (x *DeleteGoalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGoalRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGoalRequest) Descriptor() ([]byte, []int) {
-	return file_match_proto_rawDescGZIP(), []int{9}
+	return file_match_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *DeleteGoalRequest) GetGoalId() string {
+func (x *DeleteGoalRequest) GetId() string {
 	if x != nil {
-		return x.GoalId
+		return x.Id
 	}
 	return ""
 }
@@ -683,9 +795,16 @@ const file_match_proto_rawDesc = "" +
 	"\x11CreateGoalRequest\x12\x19\n" +
 	"\bmatch_id\x18\x01 \x01(\tR\amatchId\x12\x1b\n" +
 	"\tplayer_id\x18\x02 \x01(\tR\bplayerId\x12\x1b\n" +
-	"\tscored_at\x18\x03 \x01(\tR\bscoredAt\",\n" +
-	"\x11DeleteGoalRequest\x12\x17\n" +
-	"\agoal_id\x18\x01 \x01(\tR\x06goalId2\xdf\x02\n" +
+	"\tscored_at\x18\x03 \x01(\tR\bscoredAt\"x\n" +
+	"\x11UpdateGoalRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\bmatch_id\x18\x02 \x01(\tR\amatchId\x12\x1b\n" +
+	"\tplayer_id\x18\x03 \x01(\tR\bplayerId\x12\x1b\n" +
+	"\tscored_at\x18\x04 \x01(\tR\bscoredAt\" \n" +
+	"\x0eGetGoalRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"#\n" +
+	"\x11DeleteGoalRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xab\x03\n" +
 	"\fMatchService\x12*\n" +
 	"\vCreateMatch\x12\x13.CreateMatchRequest\x1a\x06.Match\x12$\n" +
 	"\bGetMatch\x12\x10.GetMatchRequest\x1a\x06.Match\x12*\n" +
@@ -695,7 +814,10 @@ const file_match_proto_rawDesc = "" +
 	"\n" +
 	"CreateGoal\x12\x12.CreateGoalRequest\x1a\x05.Goal\x128\n" +
 	"\n" +
-	"DeleteGoal\x12\x12.DeleteGoalRequest\x1a\x16.google.protobuf.EmptyB?Z=github.com/apriliantocecep/ayo-football/services/match/pkg/pbb\x06proto3"
+	"DeleteGoal\x12\x12.DeleteGoalRequest\x1a\x16.google.protobuf.Empty\x12'\n" +
+	"\n" +
+	"UpdateGoal\x12\x12.UpdateGoalRequest\x1a\x05.Goal\x12!\n" +
+	"\aGetGoal\x12\x0f.GetGoalRequest\x1a\x05.GoalB?Z=github.com/apriliantocecep/ayo-football/services/match/pkg/pbb\x06proto3"
 
 var (
 	file_match_proto_rawDescOnce sync.Once
@@ -709,7 +831,7 @@ func file_match_proto_rawDescGZIP() []byte {
 	return file_match_proto_rawDescData
 }
 
-var file_match_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_match_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_match_proto_goTypes = []any{
 	(*Match)(nil),              // 0: Match
 	(*Goal)(nil),               // 1: Goal
@@ -720,8 +842,10 @@ var file_match_proto_goTypes = []any{
 	(*ListMatchRequest)(nil),   // 6: ListMatchRequest
 	(*ListMatchResponse)(nil),  // 7: ListMatchResponse
 	(*CreateGoalRequest)(nil),  // 8: CreateGoalRequest
-	(*DeleteGoalRequest)(nil),  // 9: DeleteGoalRequest
-	(*emptypb.Empty)(nil),      // 10: google.protobuf.Empty
+	(*UpdateGoalRequest)(nil),  // 9: UpdateGoalRequest
+	(*GetGoalRequest)(nil),     // 10: GetGoalRequest
+	(*DeleteGoalRequest)(nil),  // 11: DeleteGoalRequest
+	(*emptypb.Empty)(nil),      // 12: google.protobuf.Empty
 }
 var file_match_proto_depIdxs = []int32{
 	0,  // 0: ListMatchResponse.matches:type_name -> Match
@@ -731,16 +855,20 @@ var file_match_proto_depIdxs = []int32{
 	4,  // 4: MatchService.DeleteMatch:input_type -> DeleteMatchRequest
 	6,  // 5: MatchService.ListMatch:input_type -> ListMatchRequest
 	8,  // 6: MatchService.CreateGoal:input_type -> CreateGoalRequest
-	9,  // 7: MatchService.DeleteGoal:input_type -> DeleteGoalRequest
-	0,  // 8: MatchService.CreateMatch:output_type -> Match
-	0,  // 9: MatchService.GetMatch:output_type -> Match
-	0,  // 10: MatchService.UpdateMatch:output_type -> Match
-	10, // 11: MatchService.DeleteMatch:output_type -> google.protobuf.Empty
-	7,  // 12: MatchService.ListMatch:output_type -> ListMatchResponse
-	1,  // 13: MatchService.CreateGoal:output_type -> Goal
-	10, // 14: MatchService.DeleteGoal:output_type -> google.protobuf.Empty
-	8,  // [8:15] is the sub-list for method output_type
-	1,  // [1:8] is the sub-list for method input_type
+	11, // 7: MatchService.DeleteGoal:input_type -> DeleteGoalRequest
+	9,  // 8: MatchService.UpdateGoal:input_type -> UpdateGoalRequest
+	10, // 9: MatchService.GetGoal:input_type -> GetGoalRequest
+	0,  // 10: MatchService.CreateMatch:output_type -> Match
+	0,  // 11: MatchService.GetMatch:output_type -> Match
+	0,  // 12: MatchService.UpdateMatch:output_type -> Match
+	12, // 13: MatchService.DeleteMatch:output_type -> google.protobuf.Empty
+	7,  // 14: MatchService.ListMatch:output_type -> ListMatchResponse
+	1,  // 15: MatchService.CreateGoal:output_type -> Goal
+	12, // 16: MatchService.DeleteGoal:output_type -> google.protobuf.Empty
+	1,  // 17: MatchService.UpdateGoal:output_type -> Goal
+	1,  // 18: MatchService.GetGoal:output_type -> Goal
+	10, // [10:19] is the sub-list for method output_type
+	1,  // [1:10] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -757,7 +885,7 @@ func file_match_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_match_proto_rawDesc), len(file_match_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

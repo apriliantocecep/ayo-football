@@ -27,6 +27,8 @@ const (
 	MatchService_ListMatch_FullMethodName   = "/MatchService/ListMatch"
 	MatchService_CreateGoal_FullMethodName  = "/MatchService/CreateGoal"
 	MatchService_DeleteGoal_FullMethodName  = "/MatchService/DeleteGoal"
+	MatchService_UpdateGoal_FullMethodName  = "/MatchService/UpdateGoal"
+	MatchService_GetGoal_FullMethodName     = "/MatchService/GetGoal"
 )
 
 // MatchServiceClient is the client API for MatchService service.
@@ -40,6 +42,8 @@ type MatchServiceClient interface {
 	ListMatch(ctx context.Context, in *ListMatchRequest, opts ...grpc.CallOption) (*ListMatchResponse, error)
 	CreateGoal(ctx context.Context, in *CreateGoalRequest, opts ...grpc.CallOption) (*Goal, error)
 	DeleteGoal(ctx context.Context, in *DeleteGoalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateGoal(ctx context.Context, in *UpdateGoalRequest, opts ...grpc.CallOption) (*Goal, error)
+	GetGoal(ctx context.Context, in *GetGoalRequest, opts ...grpc.CallOption) (*Goal, error)
 }
 
 type matchServiceClient struct {
@@ -120,6 +124,26 @@ func (c *matchServiceClient) DeleteGoal(ctx context.Context, in *DeleteGoalReque
 	return out, nil
 }
 
+func (c *matchServiceClient) UpdateGoal(ctx context.Context, in *UpdateGoalRequest, opts ...grpc.CallOption) (*Goal, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Goal)
+	err := c.cc.Invoke(ctx, MatchService_UpdateGoal_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *matchServiceClient) GetGoal(ctx context.Context, in *GetGoalRequest, opts ...grpc.CallOption) (*Goal, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Goal)
+	err := c.cc.Invoke(ctx, MatchService_GetGoal_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MatchServiceServer is the server API for MatchService service.
 // All implementations must embed UnimplementedMatchServiceServer
 // for forward compatibility.
@@ -131,6 +155,8 @@ type MatchServiceServer interface {
 	ListMatch(context.Context, *ListMatchRequest) (*ListMatchResponse, error)
 	CreateGoal(context.Context, *CreateGoalRequest) (*Goal, error)
 	DeleteGoal(context.Context, *DeleteGoalRequest) (*emptypb.Empty, error)
+	UpdateGoal(context.Context, *UpdateGoalRequest) (*Goal, error)
+	GetGoal(context.Context, *GetGoalRequest) (*Goal, error)
 	mustEmbedUnimplementedMatchServiceServer()
 }
 
@@ -161,6 +187,12 @@ func (UnimplementedMatchServiceServer) CreateGoal(context.Context, *CreateGoalRe
 }
 func (UnimplementedMatchServiceServer) DeleteGoal(context.Context, *DeleteGoalRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGoal not implemented")
+}
+func (UnimplementedMatchServiceServer) UpdateGoal(context.Context, *UpdateGoalRequest) (*Goal, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGoal not implemented")
+}
+func (UnimplementedMatchServiceServer) GetGoal(context.Context, *GetGoalRequest) (*Goal, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGoal not implemented")
 }
 func (UnimplementedMatchServiceServer) mustEmbedUnimplementedMatchServiceServer() {}
 func (UnimplementedMatchServiceServer) testEmbeddedByValue()                      {}
@@ -309,6 +341,42 @@ func _MatchService_DeleteGoal_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MatchService_UpdateGoal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGoalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).UpdateGoal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_UpdateGoal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).UpdateGoal(ctx, req.(*UpdateGoalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MatchService_GetGoal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGoalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).GetGoal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_GetGoal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).GetGoal(ctx, req.(*GetGoalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MatchService_ServiceDesc is the grpc.ServiceDesc for MatchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,6 +411,14 @@ var MatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteGoal",
 			Handler:    _MatchService_DeleteGoal_Handler,
+		},
+		{
+			MethodName: "UpdateGoal",
+			Handler:    _MatchService_UpdateGoal_Handler,
+		},
+		{
+			MethodName: "GetGoal",
+			Handler:    _MatchService_GetGoal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

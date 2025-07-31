@@ -99,13 +99,57 @@ func (s *MatchServer) ListMatch(ctx context.Context, in *pb.ListMatchRequest) (*
 }
 
 func (s *MatchServer) CreateGoal(ctx context.Context, in *pb.CreateGoalRequest) (*pb.Goal, error) {
-	//TODO implement me
-	panic("implement me")
+	date, err := time.Parse("2006-01-02 15:04:05", in.GetScoredAt())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid date")
+	}
+	input := model.CreateGoalInput{
+		MatchID:  in.GetMatchId(),
+		PlayerID: in.GetPlayerId(),
+		ScoredAt: date,
+	}
+	goal, err := s.MatchUseCase.CreateGoal(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return toProtoGoal(goal), nil
 }
 
 func (s *MatchServer) DeleteGoal(ctx context.Context, in *pb.DeleteGoalRequest) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	err := s.MatchUseCase.DeleteGoal(ctx, in.GetId())
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *MatchServer) GetGoal(ctx context.Context, in *pb.GetGoalRequest) (*pb.Goal, error) {
+	goal, err := s.MatchUseCase.GetGoalByID(ctx, in.GetId())
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "goal not found")
+		}
+		return nil, err
+	}
+
+	return toProtoGoal(goal), nil
+}
+
+func (s *MatchServer) UpdateGoal(ctx context.Context, in *pb.UpdateGoalRequest) (*pb.Goal, error) {
+	date, err := time.Parse("2006-01-02 15:04:05", in.GetScoredAt())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid date")
+	}
+	input := model.UpdateGoalInput{
+		MatchID:  in.GetMatchId(),
+		PlayerID: in.GetPlayerId(),
+		ScoredAt: date,
+	}
+	goal, err := s.MatchUseCase.UpdateGoal(ctx, in.GetId(), input)
+	if err != nil {
+		return nil, err
+	}
+	return toProtoGoal(goal), nil
 }
 
 func NewMatchServer(matchUseCase *usecase.MatchUseCase) *MatchServer {
@@ -121,5 +165,16 @@ func toProto(match *entity.Match) *pb.Match {
 		AwayTeamId: match.AwayTeamID.String(),
 		CreatedAt:  match.CreatedAt.String(),
 		UpdatedAt:  match.UpdatedAt.String(),
+	}
+}
+
+func toProtoGoal(goal *entity.Goal) *pb.Goal {
+	return &pb.Goal{
+		Id:        goal.ID.String(),
+		MatchId:   goal.MatchID.String(),
+		PlayerId:  goal.PlayerID.String(),
+		ScoredAt:  goal.ScoredAt.String(),
+		CreatedAt: goal.CreatedAt.String(),
+		UpdatedAt: goal.UpdatedAt.String(),
 	}
 }

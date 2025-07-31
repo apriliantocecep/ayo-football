@@ -13,6 +13,8 @@ service MatchService {
 
   rpc CreateGoal(CreateGoalRequest) returns (Goal);
   rpc DeleteGoal(DeleteGoalRequest) returns (google.protobuf.Empty);
+  rpc UpdateGoal(UpdateGoalRequest) returns (Goal);
+  rpc GetGoal(GetGoalRequest) returns (Goal);
 }
 
 message Match {
@@ -74,6 +76,17 @@ message CreateGoalRequest {
   string scored_at = 3;
 }
 
+message UpdateGoalRequest {
+  string id = 1;
+  string match_id = 2;
+  string player_id = 3;
+  string scored_at = 4;
+}
+
+message GetGoalRequest {
+  string id = 1;
+}
+
 message DeleteGoalRequest {
-  string goal_id = 1;
+  string id = 1;
 }

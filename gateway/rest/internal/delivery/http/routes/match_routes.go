@@ -15,12 +15,17 @@ type MatchRoutes struct {
 func (r *MatchRoutes) Setup() {
 	routes := r.App.Use(r.AuthMiddleware.BearerTokenAuthorization)
 
-	teams := routes.Group("matches")
-	teams.Post("/", r.MatchHandler.Create)
-	teams.Get("/", r.MatchHandler.List)
-	teams.Get("/:id", r.MatchHandler.Get)
-	teams.Put("/:id", r.MatchHandler.Update)
-	teams.Delete("/:id", r.MatchHandler.Delete)
+	matches := routes.Group("matches")
+	matches.Post("/", r.MatchHandler.Create)
+	matches.Get("/", r.MatchHandler.List)
+	matches.Get("/:id", r.MatchHandler.Get)
+	matches.Put("/:id", r.MatchHandler.Update)
+	matches.Delete("/:id", r.MatchHandler.Delete)
+	// goals
+	matches.Post("/:id/goals", r.MatchHandler.CreateGoal)
+	matches.Get("/:id/goals/:goalId", r.MatchHandler.GetGoal)
+	matches.Put("/:id/goals/:goalId", r.MatchHandler.UpdateGoal)
+	matches.Delete("/:id/goals/:goalId", r.MatchHandler.DeleteGoal)
 
 }
 

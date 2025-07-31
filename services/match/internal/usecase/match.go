@@ -18,11 +18,133 @@ type IMatchUseCase interface {
 	Update(ctx context.Context, id string, input model.UpdateMatchInput) (*entity.Match, error)
 	Delete(ctx context.Context, id string) error
 	List(ctx context.Context, page, pageSize int) ([]*entity.Match, error)
+	CreateGoal(ctx context.Context, input model.CreateGoalInput) (*entity.Goal, error)
+	GetGoalByID(ctx context.Context, id string) (*entity.Goal, error)
+	UpdateGoal(ctx context.Context, id string, input model.UpdateGoalInput) (*entity.Goal, error)
+	DeleteGoal(ctx context.Context, id string) error
 }
 
 type MatchUseCase struct {
 	DB              *gorm.DB
 	MatchRepository *repository.MatchRepository
+}
+
+func (uc *MatchUseCase) CreateGoal(ctx context.Context, input model.CreateGoalInput) (*entity.Goal, error) {
+	matchID, err := uuid.Parse(input.MatchID)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid match ID")
+	}
+
+	playerID, err := uuid.Parse(input.PlayerID)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid player ID")
+	}
+
+	goal := &entity.Goal{
+		MatchID:  matchID,
+		PlayerID: playerID,
+		ScoredAt: input.ScoredAt,
+	}
+
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	if err := uc.MatchRepository.CreateGoal(ctx, tx, goal); err != nil {
+		return nil, status.Errorf(codes.Aborted, "can not create goal")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, status.Errorf(codes.Aborted, "can not commit create goal")
+	}
+
+	return goal, nil
+}
+
+func (uc *MatchUseCase) GetGoalByID(ctx context.Context, id string) (*entity.Goal, error) {
+	goalID, err := uuid.Parse(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid goal ID")
+	}
+
+	goal, err := uc.MatchRepository.GetGoalByID(ctx, uc.DB, goalID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "goal not found")
+		}
+		return nil, err
+	}
+	return goal, nil
+}
+
+func (uc *MatchUseCase) UpdateGoal(ctx context.Context, id string, input model.UpdateGoalInput) (*entity.Goal, error) {
+	goalID, err := uuid.Parse(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid goal ID")
+	}
+
+	matchID, err := uuid.Parse(input.MatchID)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid match ID")
+	}
+
+	playerID, err := uuid.Parse(input.PlayerID)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid player ID")
+	}
+
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	existing, err := uc.MatchRepository.GetGoalByID(ctx, tx, goalID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "goal not found")
+		}
+		return nil, err
+	}
+
+	existing.MatchID = matchID
+	existing.PlayerID = playerID
+	existing.ScoredAt = input.ScoredAt
+
+	if err := uc.MatchRepository.UpdateGoal(ctx, tx, existing); err != nil {
+		return nil, status.Errorf(codes.Aborted, "can not update goal")
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, status.Errorf(codes.Aborted, "can not commit update goal")
+	}
+
+	return existing, nil
+}
+
+func (uc *MatchUseCase) DeleteGoal(ctx context.Context, id string) error {
+	goalID, err := uuid.Parse(id)
+	if err != nil {
+		return status.Errorf(codes.InvalidArgument, "invalid goal ID")
+	}
+
+	tx := uc.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
+
+	_, err = uc.MatchRepository.GetGoalByID(ctx, uc.DB, goalID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return status.Errorf(codes.NotFound, "goal not found")
+		}
+		return err
+	}
+
+	err = uc.MatchRepository.DeleteGoal(ctx, tx, goalID)
+	if err != nil {
+		return status.Errorf(codes.Aborted, "can not delete goal: %v", err)
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		return status.Errorf(codes.Aborted, "can not commit delete goal")
+	}
+
+	return nil
 }
 
 func (uc *MatchUseCase) Create(ctx context.Context, input model.CreateMatchInput) (*entity.Match, error) {

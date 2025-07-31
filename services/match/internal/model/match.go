@@ -15,3 +15,15 @@ type UpdateMatchInput struct {
 	HomeTeamID string
 	AwayTeamID string
 }
+
+type CreateGoalInput struct {
+	MatchID  string
+	PlayerID string
+	ScoredAt time.Time
+}
+
+type UpdateGoalInput struct {
+	MatchID  string
+	PlayerID string
+	ScoredAt time.Time
+}
