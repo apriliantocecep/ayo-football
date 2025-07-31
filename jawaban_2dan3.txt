@@ -1,0 +1,55 @@
+Soal 2: Analisis Website dan Aplikasi AYO ================================================================================
+1. Website ayo.co.id - Area Peningkatan:
+User Experience (UX):
+
+Website memiliki informasi yang cukup lengkap namun navigasi bisa diperbaiki dengan struktur menu yang lebih jelas
+Loading speed halaman perlu dioptimalkan untuk meningkatkan engagement
+Tambahkan fitur search untuk memudahkan pengguna menemukan venue atau komunitas tertentu
+
+User Interface (UI):
+
+Desain visual sudah cukup menarik namun bisa ditingkatkan dengan konsistensi warna dan typography
+Responsivitas mobile perlu diperbaiki agar pengalaman browsing di berbagai device lebih optimal
+Call-to-action buttons bisa lebih prominent dan strategis penempatannya
+
+Content & Features:
+
+Tambahkan testimoni pengguna yang lebih bervariasi dan detail
+Sediakan demo atau video tutorial penggunaan aplikasi
+Integrasikan live chat atau FAQ untuk customer support
+
+Soal 3: Pertanyaan Interview ================================================================================
+1. Jelaskan alasan mengapa Anda merupakan kandidat terbaik untuk posisi ini, serta bagaimana kontribusi Anda dapat memberikan nilai tambah bagi perusahaan kami.
+Saya percaya bahwa saya adalah kandidat terbaik untuk posisi ini karena memiliki kombinasi keterampilan teknis, pengalaman praktis dalam pengembangan perangkat lunak, serta pemahaman mendalam tentang sistem backend yang scalable dan maintainable. Saya telah membangun berbagai aplikasi menggunakan stack modern seperti Golang, Node.js, dan Rust, serta memiliki pengalaman dalam membangun sistem microservices, integrasi API, dan manajemen deployment menggunakan Docker dan Kubernetes.
+Kontribusi saya dapat memberikan nilai tambah bagi Ayo Indonesia terutama dalam hal efisiensi dan stabilitas sistem. Saya terbiasa menulis kode yang clean, testable, dan dapat diobservasi dengan tools seperti OpenTelemetry. Selain itu, saya juga terbiasa bekerja secara kolaboratif dalam tim lintas fungsi dengan pendekatan Agile dan CI/CD.
+
+2. Sebutkan tiga keunggulan utama yang Anda miliki yang membuat Anda pantas untuk terpilih dalam rekrutmen ini
+Kuat dalam pengembangan backend dan arsitektur sistem: Terbiasa membangun REST/gRPC API, mengelola database relasional dan NoSQL, serta menerapkan best practice pada desain sistem.
+Problem solver yang proaktif: Mampu menganalisis akar masalah secara sistematis dan mencari solusi yang efisien dan berkelanjutan.
+Cepat belajar dan adaptif terhadap teknologi baru: Terbukti dengan pengalaman saya mempelajari dan menerapkan teknologi seperti Rust, Kubernetes, hingga observability stack seperti Grafana Tempo dan OpenTelemetry.
+
+3. Berikan contoh konkret pencapaian atau pengalaman Anda yang relevan dengan posisi ini, serta jelaskan bagaimana hal tersebut dapat bermanfaat bagi tim kami.
+Salah satu pencapaian saya adalah membangun sistem content moderation berbasis microservice untuk technical test perusahaan lain, yang terdiri dari layanan auth, article, moderation, dan gateway. Sistem ini mengintegrasikan gRPC, RabbitMQ untuk pipeline asynchronous, serta observability end-to-end. Saya juga menerapkan tracing dengan OpenTelemetry dan Tempo, yang sangat membantu dalam debugging dan monitoring performa.
+Pengalaman ini membuktikan kemampuan saya dalam membangun sistem yang modular, terintegrasi, dan siap produksi — yang tentunya dapat saya terapkan juga untuk membangun dan meningkatkan sistem di Ayo Indonesia.
+
+4. Tuliskan motivasi Anda melamar posisi ini dan bagaimana Anda berencana untuk memberikan dampak positif jika terpilih nantinya.
+Motivasi saya melamar adalah karena saya melihat Ayo Indonesia sebagai perusahaan yang berkontribusi langsung terhadap peningkatan kualitas hidup masyarakat melalui teknologi. Saya ingin menjadi bagian dari tim yang memiliki dampak nyata, serta ikut mendorong inovasi dari sisi teknologi backend.
+Jika terpilih, saya berencana untuk:
+
+Membantu memperkuat arsitektur sistem agar lebih scalable dan maintainable.
+Mendorong adopsi praktik engineering yang baik seperti test automation, CI/CD, dan observability.
+Berkolaborasi aktif untuk mempercepat delivery tanpa mengorbankan kualitas.
+
+5. Jika Anda diberikan kesempatan untuk bergabung, langkah-langkah apa yang akan Anda ambil dalam 3 bulan pertama untuk menunjukkan performa terbaik?
+Bulan 1:
+Adaptasi terhadap lingkungan kerja, memahami proses bisnis, sistem yang ada, dan kultur tim.
+Review codebase dan dokumentasi, serta mulai berkontribusi dengan perbaikan kecil atau bug fixing.
+Membangun relasi kerja yang baik dengan rekan tim dan stakeholder terkait.
+
+Bulan 2:
+Mengambil tanggung jawab pada satu atau lebih fitur/layanan, serta mulai mengusulkan perbaikan dari sisi performa atau struktur kode.
+Menyumbang pada proses pengembangan seperti code review, testing, dan dokumentasi teknis.
+
+Bulan 3:
+Merancang atau memimpin implementasi sebuah inisiatif teknis kecil seperti refactoring service, memperbaiki pipeline CI/CD, atau memperkenalkan tools observability/logging yang membantu tim dalam jangka panjang.
+
