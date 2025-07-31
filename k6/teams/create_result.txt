@@ -1,0 +1,45 @@
+k6 run k6/teams/create.js                                                                                                                     ─╯
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: k6/teams/create.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m40s max duration (incl. graceful stop):
+              * default: Up to 100 looping VUs for 1m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+     ✗ status is 200 or 201
+      ↳  99% — ✓ 115281 / ✗ 609
+     ✗ response time < 200ms
+      ↳  99% — ✓ 115134 / ✗ 756
+     ✓ response has body
+
+     checks.........................: 99.60% ✓ 346305      ✗ 1365
+     data_received..................: 53 MB  762 kB/s
+     data_sent......................: 81 MB  1.2 MB/s
+   ✓ errors.........................: 1.10%  ✓ 1286        ✗ 114604
+     http_req_blocked...............: avg=2.18µs  min=0s     med=1µs     max=3.09ms   p(90)=3µs     p(95)=4µs
+     http_req_connecting............: avg=235ns   min=0s     med=0s      max=1.92ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=38.55ms min=963µs  med=25.95ms max=467.88ms p(90)=88.07ms p(95)=115.14ms
+       { expected_response:true }...: avg=38.09ms min=963µs  med=25.81ms max=467.88ms p(90)=86.78ms p(95)=113.14ms
+     http_req_failed................: 0.52%  ✓ 609         ✗ 115281
+     http_req_receiving.............: avg=34.51µs min=4µs    med=22µs    max=10.21ms  p(90)=64µs    p(95)=85µs
+     http_req_sending...............: avg=13.39µs min=2µs    med=9µs     max=7.79ms   p(90)=20µs    p(95)=27µs
+     http_req_tls_handshaking.......: avg=0s      min=0s     med=0s      max=0s       p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=38.5ms  min=929µs  med=25.89ms max=467.86ms p(90)=88.01ms p(95)=115.09ms
+     http_reqs......................: 115890 1655.577814/s
+     iteration_duration.............: avg=38.67ms min=1.04ms med=26.07ms max=467.94ms p(90)=88.19ms p(95)=115.25ms
+     iterations.....................: 115890 1655.577814/s
+     vus............................: 1      min=1         max=99
+     vus_max........................: 100    min=100       max=100
+
+
+running (1m10.0s), 000/100 VUs, 115890 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  1m10s
+
